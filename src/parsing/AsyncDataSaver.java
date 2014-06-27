@@ -5,26 +5,24 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import com.sun.tools.javac.util.List;
-
 public class AsyncDataSaver {
-	private static ConfigObject conf;
 	
 	public static void main(String[] args) throws IOException {
-		conf = new ConfigObject();
+		ConfigObject conf = new ConfigObject();
 		conf.createFrom("config.json");
 		
 		AsyncDataSaver asyncDataSaver = new AsyncDataSaver();
-		asyncDataSaver.downloadAndSaveData();
+		asyncDataSaver.downloadAndSaveData(conf);
 	}
 	
-	public void downloadAndSaveData() {
+	public void downloadAndSaveData(ConfigObject conf) {
 		ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
 		for(ConfigElement elem : conf) {
-			System.out.println(elem.fileName);
-			MyThread t1 = new MyThread(elem.fileName, elem.listOfUrls, "");
+			MyThread t1 = new MyThread(elem.fileName, elem.listOfUrls, elem.parser);
 			
-			scheduledExecutorService.scheduleAtFixedRate(t1, 0, 5, TimeUnit.SECONDS);
+			long period = Long.parseLong(elem.period);
+			TimeUnit timeUnt = TimeUnit.valueOf(elem.timeUnit);
+			scheduledExecutorService.scheduleAtFixedRate(t1, 0, period, timeUnt);
 		}
 	}
 	
@@ -47,13 +45,25 @@ public class AsyncDataSaver {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			DataSaver saver = new DataSaver(f, listOfUrls, new BasicParser());
+			
+			Parser p = null;
+			try {
+				p = createParser(parser);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			DataSaver saver = new DataSaver(f, listOfUrls, p);
 			try {
 				saver.downloadParseSave();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 			
+		}
+		
+		private Parser createParser(String parser) throws InstantiationException, IllegalAccessException, ClassNotFoundException{
+			Class<?> c = Class.forName(parser);
+			return (Parser) c.newInstance();
 		}
 		
 	}

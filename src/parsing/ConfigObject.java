@@ -18,17 +18,19 @@ public class ConfigObject implements Iterable<ConfigElement> {
 	private ArrayList<ConfigElement> list = new ArrayList<ConfigElement>();
 
 	public void createFrom(String configFilePath) throws FileNotFoundException {
-		File f = new File(configFilePath);
-		JsonReader reader = Json.createReader(new FileReader(new File(
-				configFilePath)));
+		JsonReader reader = Json.createReader(new FileReader(new File(configFilePath)));
 		JsonObject dataList = reader.readObject();
 
+		String fileName, parser, period, timeUnit;
 		JsonArray arr = dataList.getJsonArray("items");
 		for (int i = 0; i < arr.size(); i++) {
 			JsonObject obj = arr.getJsonObject(i);
-			String fileName = obj.getString("fileName");
+			fileName = obj.getString("fileName");
+			parser = obj.getString("parser");
+			period = obj.getString("period");
+			timeUnit = obj.getString("timeUnit");
 			String[] url = getArray(obj.getJsonArray("url"));
-			list.add(new ConfigElement(fileName, Arrays.asList(url), ""));
+			list.add(new ConfigElement(fileName, Arrays.asList(url), parser, period, timeUnit));
 		}
 	}
 	

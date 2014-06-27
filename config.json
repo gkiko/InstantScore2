@@ -3,7 +3,9 @@
       {
          "fileName":"tets1",
          "url":["http://livescore.com/soccer"],
-         "servletName":"servlet1"
+         "parser":"parsing.BasicParser",
+		 "period":"5",
+		 "timeUnit":"SECONDS"
       },
       {
          "fileName":"tets2",
@@ -12,7 +14,10 @@
             "http://www.livescore.com/soccer/2014-06-27/",
             "http://www.livescore.com/soccer/2014-06-25/",
             "http://www.livescore.com/soccer/2014-06-26/"
-         ]
+         ],
+         "parser":"parsing.BasicParser",
+         "period":"2",
+		 "timeUnit":"DAYS"
       }
    ]
 }
