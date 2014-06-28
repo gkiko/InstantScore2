@@ -1,0 +1,23 @@
+{
+   "items":[
+      {
+         "fileName":"tets1",
+         "url":["http://www.livescore.com/soccer/"],
+         "parser":"parsing.BasicParser",
+		 "period":"5",
+		 "timeUnit":"SECONDS"
+      },
+      {
+         "fileName":"tets2",
+         "url":[
+            "http://www.livescore.com/soccer/",
+            "http://www.livescore.com/soccer/",
+            "http://www.livescore.com/soccer/",
+            "http://www.livescore.com/soccer/"
+         ],
+         "parser":"parsing.BasicParser",
+         "period":"2",
+		 "timeUnit":"DAYS"
+      }
+   ]
+}

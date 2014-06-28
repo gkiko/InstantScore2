@@ -1,11 +1,10 @@
-package utils.config;
+package utils;
 
 import java.util.Calendar;
 import java.util.List;
 
 import parsing.ConfigElement;
 import parsing.ConfigObject;
-import utils.Utils;
 
 public class ConfigUtils {
 	public static void modifyUrlFields(ConfigObject config){

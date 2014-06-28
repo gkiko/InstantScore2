@@ -1,14 +1,18 @@
 package parsing;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import utils.config.ConfigUtils;
+import utils.ConfigUtils;
 
 public class AsyncDataSaver {
+	private static final Logger LOGGER = Logger.getLogger(AsyncDataSaver.class.getName());
 	private ScheduledExecutorService scheduledExecutorService;
 	
 	public static void main(String[] args) {
@@ -19,7 +23,7 @@ public class AsyncDataSaver {
 			public void run() {
 				ConfigObject conf = new ConfigObject();
 				try {
-					conf.createFrom("config.json");
+					conf.createFrom(new FileInputStream("config.json"));
 				} catch (FileNotFoundException e) {
 					e.printStackTrace();
 				}
@@ -35,6 +39,7 @@ public class AsyncDataSaver {
 	public void downloadAndSaveData(ConfigObject conf) {
 		scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
 		for(ConfigElement elem : conf) {
+			LOGGER.log(Level.INFO, elem.getListOfUrls().toString());
 			MyThread t1 = new MyThread(elem.getFileName(), elem.getListOfUrls(), elem.getParser());
 			
 			long period = Long.parseLong(elem.getPeriod());

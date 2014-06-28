@@ -1,8 +1,7 @@
 package parsing;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
+import java.io.InputStream;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -15,8 +14,8 @@ import javax.json.JsonReader;
 public class ConfigObject implements Iterable<ConfigElement> {
 	private ArrayList<ConfigElement> list = new ArrayList<ConfigElement>();
 
-	public void createFrom(String configFilePath) throws FileNotFoundException {
-		JsonReader reader = Json.createReader(new FileReader(new File(configFilePath)));
+	public void createFrom(InputStream in) {
+		JsonReader reader = Json.createReader(in);
 		JsonObject dataList = reader.readObject();
 
 		String fileName, parser, period, timeUnit;
