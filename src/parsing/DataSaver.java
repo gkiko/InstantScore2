@@ -34,8 +34,6 @@ public class DataSaver {
 		JsonArray resultArray = builder.build();
 		JsonObject obj = Json.createObjectBuilder().add("data", resultArray).build();
 		fileWrite(obj);
-//		System.out.println(resultArray.toString());
-//		System.out.println(jsonObj.toString());
 	}
 	
 	private void fileWrite(JsonObject jsonObj) throws IOException{

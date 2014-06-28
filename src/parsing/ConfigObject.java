@@ -1,7 +1,5 @@
 package parsing;
 
-//import ConfigElement;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -29,19 +27,23 @@ public class ConfigObject implements Iterable<ConfigElement> {
 			parser = obj.getString("parser");
 			period = obj.getString("period");
 			timeUnit = obj.getString("timeUnit");
-			String[] url = getArray(obj.getJsonArray("url"));
+			String[] url = createArrayFrom(obj.getJsonArray("url"));
 			list.add(new ConfigElement(fileName, Arrays.asList(url), parser, period, timeUnit));
 		}
 	}
 	
-	private String[] getArray(JsonArray jsonArr){
+	private String[] createArrayFrom(JsonArray jsonArr){
 		String[] arr = new String[jsonArr.size()];
 		for(int i=0;i<arr.length;i++){
 			arr[i] = jsonArr.getString(i);
 		}
 		return arr;
 	}
-
+	
+	public void setAt(ConfigElement elem, int i){
+		list.set(i, elem);
+	}
+	
 	@Override
 	public Iterator<ConfigElement> iterator() {
 		return list.iterator();

@@ -15,6 +15,7 @@ public class BasicParser implements Parser {
 
 	@Override
 	public JsonObject parse(String url) throws IOException {
+		System.out.println("try "+url);
 		Document doc = Jsoup.connect(url).get();
 
 		Elements leagues = doc.select(".league-table:not(.mtn)");

@@ -1,29 +1,53 @@
 package parsing;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import utils.config.ConfigUtils;
+
 public class AsyncDataSaver {
+	private ScheduledExecutorService scheduledExecutorService;
 	
-	public static void main(String[] args) throws IOException {
-		ConfigObject conf = new ConfigObject();
-		conf.createFrom("config.json");
-		
-		AsyncDataSaver asyncDataSaver = new AsyncDataSaver();
-		asyncDataSaver.downloadAndSaveData(conf);
+	public static void main(String[] args) {
+		ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
+		scheduledExecutorService.scheduleAtFixedRate(new Runnable() {
+			
+			@Override
+			public void run() {
+				ConfigObject conf = new ConfigObject();
+				try {
+					conf.createFrom("config.json");
+				} catch (FileNotFoundException e) {
+					e.printStackTrace();
+				}
+				
+				ConfigUtils.modifyUrlFields(conf);
+				AsyncDataSaver asyncDataSaver = new AsyncDataSaver();
+				asyncDataSaver.downloadAndSaveData(conf);
+				
+			}
+		}, 0, 1, TimeUnit.DAYS);
 	}
 	
 	public void downloadAndSaveData(ConfigObject conf) {
-		ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
+		scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
 		for(ConfigElement elem : conf) {
-			MyThread t1 = new MyThread(elem.fileName, elem.listOfUrls, elem.parser);
+			MyThread t1 = new MyThread(elem.getFileName(), elem.getListOfUrls(), elem.getParser());
 			
-			long period = Long.parseLong(elem.period);
-			TimeUnit timeUnt = TimeUnit.valueOf(elem.timeUnit);
+			long period = Long.parseLong(elem.getPeriod());
+			TimeUnit timeUnt = TimeUnit.valueOf(elem.getTimeUnit());
 			scheduledExecutorService.scheduleAtFixedRate(t1, 0, period, timeUnt);
 		}
+	}
+	
+	public void stop(){
+		if(scheduledExecutorService==null){
+			return;
+		}
+		scheduledExecutorService.shutdown();
 	}
 	
 	private class MyThread implements Runnable{
