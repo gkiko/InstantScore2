@@ -31,13 +31,12 @@ public class BasicParser implements Parser {
 			String date = header.select(".date").text();
 			jsonLeagueObj.add("header", headerText);
 			jsonLeagueObj.add("date", date);
-//			System.out.println(headerText + " " + date);
 
 			for (int i = 1; i < leagueData.size(); i++) {
 				Element element = leagueData.get(i);
 				JsonObjectBuilder jsonMatchData = Json.createObjectBuilder();
 
-				String time = element.select(".time").text();
+				String time = element.select(".fd").text();
 				String t1 = element.select(".fh").text();
 				String score = element.select(".fs").text();
 				String t2 = element.select(".fa").text();
@@ -47,7 +46,6 @@ public class BasicParser implements Parser {
 				jsonMatchData.add("score", score);
 				jsonMatchData.add("t2", t2);
 				jsonLeagueMatches.add(jsonMatchData);
-//				System.out.println(time + " " + t1 + " " + score + " " + t2);
 				jsonLeagueObj.add("matches", jsonLeagueMatches);
 			}
 			jsonArrMain.add(jsonLeagueObj);

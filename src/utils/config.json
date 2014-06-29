@@ -16,7 +16,7 @@
             "http://www.livescore.com/soccer/"
          ],
          "parser":"parsing.BasicParser",
-         "period":"2",
+         "period":"1",
 		 "timeUnit":"DAYS"
       }
    ]
