@@ -32,11 +32,11 @@ public class DataSaver {
 			}
 		}
 		JsonArray resultArray = builder.build();
-		JsonObject obj = Json.createObjectBuilder().add("data", resultArray).build();
-		fileWrite(obj);
+//		JsonObject obj = Json.createObjectBuilder().add("data", resultArray).build();
+		fileWrite(resultArray);
 	}
 	
-	private void fileWrite(JsonObject jsonObj) throws IOException{
+	private void fileWrite(JsonArray jsonObj) throws IOException{
 		FileWriter writer = new FileWriter(file);
 		try {
 			writer.write(jsonObj.toString());

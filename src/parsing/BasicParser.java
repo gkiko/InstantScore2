@@ -46,8 +46,8 @@ public class BasicParser implements Parser {
 				jsonMatchData.add("score", score);
 				jsonMatchData.add("t2", t2);
 				jsonLeagueMatches.add(jsonMatchData);
-				jsonLeagueObj.add("matches", jsonLeagueMatches);
 			}
+			jsonLeagueObj.add("matches", jsonLeagueMatches);
 			jsonArrMain.add(jsonLeagueObj);
 		}
 
