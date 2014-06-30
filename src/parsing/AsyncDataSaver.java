@@ -16,24 +16,24 @@ public class AsyncDataSaver {
 	private ScheduledExecutorService scheduledExecutorService;
 	
 	public static void main(String[] args) {
-		ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
-		scheduledExecutorService.scheduleAtFixedRate(new Runnable() {
-			
-			@Override
-			public void run() {
-				ConfigObject conf = new ConfigObject();
-				try {
-					conf.createFrom(new FileInputStream("config.json"));
-				} catch (FileNotFoundException e) {
-					e.printStackTrace();
-				}
-				
-				ConfigUtils.modifyUrlFields(conf);
-				AsyncDataSaver asyncDataSaver = new AsyncDataSaver();
-				asyncDataSaver.downloadAndSaveData(conf);
-				
-			}
-		}, 0, 1, TimeUnit.DAYS);
+//		ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
+//		scheduledExecutorService.scheduleAtFixedRate(new Runnable() {
+//			
+//			@Override
+//			public void run() {
+//				ConfigObject conf = new ConfigObject();
+//				try {
+//					conf.createFrom(new FileInputStream("config.json"));
+//				} catch (FileNotFoundException e) {
+//					e.printStackTrace();
+//				}
+//				
+//				ConfigUtils.modifyUrlFields(conf);
+//				AsyncDataSaver asyncDataSaver = new AsyncDataSaver();
+//				asyncDataSaver.downloadAndSaveData(conf);
+//				
+//			}
+//		}, 0, 1, TimeUnit.DAYS);
 	}
 	
 	public void downloadAndSaveData(ConfigObject conf) {

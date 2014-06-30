@@ -32,7 +32,6 @@ public class DataSaver {
 			}
 		}
 		JsonArray resultArray = builder.build();
-//		JsonObject obj = Json.createObjectBuilder().add("data", resultArray).build();
 		fileWrite(resultArray);
 	}
 	

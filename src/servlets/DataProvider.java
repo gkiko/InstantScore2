@@ -12,6 +12,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 
+import parsing.ConfigObject;
+
 /**
  * Servlet implementation class DataProvider
  */
@@ -31,7 +33,14 @@ public class DataProvider extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		File f = new File("tets1");
+		File f;
+		String fileName, fileParameter;
+		
+		ConfigObject config = (ConfigObject) getServletContext().getAttribute("config");
+		
+		fileParameter = request.getParameter("type");
+		fileName = config.getFileName(fileParameter);
+		f = new File(fileName);
 		FileInputStream in = new FileInputStream(f);
 		IOUtils.copy(in, response.getOutputStream());
 	}

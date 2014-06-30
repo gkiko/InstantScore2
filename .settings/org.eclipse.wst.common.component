@@ -5,6 +5,9 @@
         <dependent-module archiveName="javax.json-1.0.4.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib//Users/gkiko/Workspace/InstantScore2/lib/javax.json-1.0.4.jar">
             <dependency-type>uses</dependency-type>
         </dependent-module>
+        <dependent-module archiveName="gson-2.2.4.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/InstantScore2/WebContent/WEB-INF/lib/google-gson-2.2.4/gson-2.2.4.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
         <property name="context-root" value="InstantScore2"/>
         <property name="java-output-path" value="/InstantScore2/build/classes"/>
     </wb-module>

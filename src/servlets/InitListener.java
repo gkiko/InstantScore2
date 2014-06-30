@@ -1,5 +1,6 @@
 package servlets;
 
+import java.io.InputStreamReader;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -12,6 +13,9 @@ import javax.servlet.annotation.WebListener;
 import parsing.AsyncDataSaver;
 import parsing.ConfigObject;
 import utils.ConfigUtils;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 /**
  * Application Lifecycle Listener implementation class InitListener
@@ -32,14 +36,15 @@ public class InitListener implements ServletContextListener {
 	/**
      * @see ServletContextListener#contextInitialized(ServletContextEvent)
      */
-    public void contextInitialized(ServletContextEvent arg0) {
+    public void contextInitialized(final ServletContextEvent arg0) {
     	ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
 		scheduledExecutorService.scheduleAtFixedRate(new Runnable() {
 			
 			@Override
 			public void run() {
-				ConfigObject conf = new ConfigObject();
-				conf.createFrom(getClass().getResourceAsStream("/utils/config.json"));
+				Gson gson = new GsonBuilder().create();
+				ConfigObject conf = gson.fromJson(new InputStreamReader(getClass().getResourceAsStream("/utils/config.json")), ConfigObject.class);
+				arg0.getServletContext().setAttribute("config", conf);
 				
 				ConfigUtils.modifyUrlFields(conf);
 				asyncDataSaver.stop();

@@ -1,49 +1,23 @@
 package parsing;
 
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
-
-import javax.json.Json;
-import javax.json.JsonArray;
-import javax.json.JsonObject;
-import javax.json.JsonReader;
+import java.util.List;
 
 public class ConfigObject implements Iterable<ConfigElement> {
-	private ArrayList<ConfigElement> list = new ArrayList<ConfigElement>();
-
-	public void createFrom(InputStream in) {
-		JsonReader reader = Json.createReader(in);
-		JsonObject dataList = reader.readObject();
-
-		String fileName, parser, period, timeUnit;
-		JsonArray arr = dataList.getJsonArray("items");
-		for (int i = 0; i < arr.size(); i++) {
-			JsonObject obj = arr.getJsonObject(i);
-			fileName = obj.getString("fileName");
-			parser = obj.getString("parser");
-			period = obj.getString("period");
-			timeUnit = obj.getString("timeUnit");
-			String[] url = createArrayFrom(obj.getJsonArray("url"));
-			list.add(new ConfigElement(fileName, Arrays.asList(url), parser, period, timeUnit));
-		}
-	}
+	private List<ConfigElement> items;
 	
-	private String[] createArrayFrom(JsonArray jsonArr){
-		String[] arr = new String[jsonArr.size()];
-		for(int i=0;i<arr.length;i++){
-			arr[i] = jsonArr.getString(i);
+	public String getFileName(String fileParameter){
+		String fileName = "";
+		for(ConfigElement elem : items){
+			if(elem.getParameter().equals(fileParameter)){
+				fileName = elem.getFileName();
+			}
 		}
-		return arr;
-	}
-	
-	public void setAt(ConfigElement elem, int i){
-		list.set(i, elem);
+		return fileName;
 	}
 	
 	@Override
 	public Iterator<ConfigElement> iterator() {
-		return list.iterator();
+		return items.iterator();
 	}
 }
