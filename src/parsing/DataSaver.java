@@ -4,11 +4,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
 
-import javax.json.Json;
-import javax.json.JsonArray;
-import javax.json.JsonArrayBuilder;
-import javax.json.JsonObject;
-import javax.json.JsonValue;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 
 
 public class DataSaver {
@@ -23,16 +20,14 @@ public class DataSaver {
 	}
 	
 	public void downloadParseSave() throws IOException{
-		JsonArrayBuilder builder = Json.createArrayBuilder();
+		JsonArray array = new JsonArray();
 		for(String url : listOfUrls) {
-			JsonObject jsonObj = p.parse(url);
-			JsonArray jsonArr = jsonObj.getJsonArray("data");
-			for(JsonValue obj : jsonArr) {
-				builder.add(obj);
+			JsonArray jsonArr = p.parse(url);
+			for(JsonElement obj : jsonArr) {
+				array.add(obj);
 			}
 		}
-		JsonArray resultArray = builder.build();
-		fileWrite(resultArray);
+		fileWrite(array);
 	}
 	
 	private void fileWrite(JsonArray jsonObj) throws IOException{
