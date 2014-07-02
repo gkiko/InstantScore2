@@ -40,6 +40,7 @@ public class DataProvider extends HttpServlet {
 		
 		fileParameter = request.getParameter("type");
 		fileName = config.getFileName(fileParameter);
+//		System.out.println(fileParameter+" "+fileName);
 		f = new File(fileName);
 		FileInputStream in = new FileInputStream(f);
 		IOUtils.copy(in, response.getOutputStream());

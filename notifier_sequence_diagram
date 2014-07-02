@@ -1,0 +1,29 @@
+@startuml
+title notify subscribers sequence diagram
+
+participant DataSaver << (C,#ADD1B2) >>
+participant UpdateNotifier << (C,#ADD1B2) >>
+participant DiffFinder << (C,#ADD1B2) >>
+participant MsgTextGenerator << (C,#ADD1B2) >>
+participant SubscriberData << (C,#ADD1B2) >>
+participant MsgSender << (C,#ADD1B2) >>
+
+DataSaver -> UpdateNotifier : send new list
+UpdateNotifier -> DiffFinder : find diff <b>old</b> vs <b>new</b> list
+UpdateNotifier <- DiffFinder : return list<<b>diffs</b>>
+loop N_of_diffs times
+	UpdateNotifier -> MsgTextGenerator : generate <b>msgs</b> for each <b>diff</b>
+	UpdateNotifier <- MsgTextGenerator : return list<<b>msgs</b>>
+	
+	UpdateNotifier -> SubscriberData : get <b>subscriber</b> list
+	UpdateNotifier <- SubscriberData : return list<<b>subscribers</b>>
+	
+	loop N_of_subscribers times
+		alt successful case
+			UpdateNotifier -> MsgSender : send msg to <b>subscriber</b>
+		else some kind of failure
+		end
+	end
+	
+end
+@enduml

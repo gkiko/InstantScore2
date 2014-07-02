@@ -1,0 +1,50 @@
+@startuml
+title notify subscribers class diagram
+
+interface Observer
+interface Observable
+package parser <<folder>> #DDDDDD{
+	class DataSaver{
+		+void addObserver(Observer)
+	}
+}
+
+class UpdateNotifier{
+	List<League> oldList
+	List<League> newList
+	
+	+void notifyDownload(List<League>)
+}
+
+class DiffFinder{
+	+List<DiffData> getDiffs(newList, oldList)
+}
+
+class MsgTextGenerator{
+	+String getMsgText(diffData)
+}
+
+class MsgSender{
+	+void sendMsgToUser(msgTxt,phoneNum)
+}
+
+package "database" <<database>>{
+	class DbManager
+	class SubscriberData{
+		+List<String> getUsersByMatchId(stringId)
+	}
+}
+
+DataSaver <|-- Observable
+UpdateNotifier <|-- Observer
+
+DataSaver *-- UpdateNotifier
+UpdateNotifier --> DiffFinder
+UpdateNotifier --> MsgTextGenerator
+UpdateNotifier --> SubscriberData
+UpdateNotifier --> MsgSender
+SubscriberData --> DbManager
+
+note "simplified view" as N1
+DataSaver .. N1
+@enduml

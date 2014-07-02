@@ -1,54 +1,56 @@
 package parsing;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import model.League;
+import model.Match;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-
 public class BasicParser implements Parser {
 
 	@Override
-	public JsonArray parse(String url) throws IOException {
+	public List<League> parse(String url) throws IOException {
 		Document doc = Jsoup.connect(url).get();
 
 		Elements leagues = doc.select(".league-table:not(.mtn)");
 
-		JsonArray jsonArrMain = new JsonArray();
+		List<League> leagueList = new ArrayList<League>();
 		for (Element league : leagues) {
 			Elements leagueData = league.select("tr");
 
-			JsonObject jsonLeagueObj = new JsonObject();
-			JsonArray jsonLeagueMatches = new JsonArray();
+			League leagueObj = new League();
+			List<Match> matcheList = new ArrayList<Match>();
 
 			Element header = leagueData.first();
 			String headerText = header.select(".league").text();
 			String date = header.select(".date").text();
-			jsonLeagueObj.addProperty("header", headerText);
-			jsonLeagueObj.addProperty("date", date);
+			leagueObj.setName(headerText);
+			leagueObj.setDate(date);
 
 			for (int i = 1; i < leagueData.size(); i++) {
 				Element element = leagueData.get(i);
-				JsonObject jsonMatchData = new JsonObject();
+				Match matchData = new Match();
 
 				String time = element.select(".fd").text();
 				String t1 = element.select(".fh").text();
 				String score = element.select(".fs").text();
 				String t2 = element.select(".fa").text();
 
-				jsonMatchData.addProperty("time", time);
-				jsonMatchData.addProperty("t1", t1);
-				jsonMatchData.addProperty("score", score);
-				jsonMatchData.addProperty("t2", t2);
-				jsonLeagueMatches.add(jsonMatchData);
+				matchData.setTime(time);
+				matchData.setTeam1(t1);
+				matchData.setScore(score);
+				matchData.setTeam2(t2);
+				matcheList.add(matchData);
 			}
-			jsonLeagueObj.add("matches", jsonLeagueMatches);
-			jsonArrMain.add(jsonLeagueObj);
+			leagueObj.setMatches(matcheList);
+			leagueList.add(leagueObj);
 		}
 
-		return jsonArrMain;
+		return leagueList;
 	}
 }

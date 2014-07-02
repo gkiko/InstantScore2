@@ -1,9 +1,10 @@
 package parsing;
 import java.io.IOException;
+import java.util.List;
 
-import com.google.gson.JsonArray;
+import model.League;
 
 
 public interface Parser {
-	public JsonArray parse(String url) throws IOException;
+	public List<League> parse(String url) throws IOException;
 }
