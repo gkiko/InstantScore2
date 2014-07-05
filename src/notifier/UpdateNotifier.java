@@ -40,6 +40,7 @@ public class UpdateNotifier implements Observer{
 		}else{
 			this.newList = newList;
 			checkIfUpdated();
+			oldList = this.newList;
 		}
 	}
 	
