@@ -1,18 +1,20 @@
 package notifier;
 
+import model.Match;
+
 public class DiffData {
-	private String matchId;
+	private Match match;
 	private String oldScore;
 	private String newScore;
 	
-	public DiffData(String matchName, String oldScore, String newsScore){
-		this.matchId = matchName;
+	public DiffData(Match matchName, String oldScore, String newsScore){
+		this.match = matchName;
 		this.oldScore = oldScore;
 		this.newScore = newsScore;
 	}
 
-	public String getMatchId() {
-		return matchId;
+	public Match getMatch() {
+		return match;
 	}
 
 	public String getOldScore() {

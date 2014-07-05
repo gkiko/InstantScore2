@@ -49,4 +49,13 @@ public class Match {
 	public void setTeam2(String team2) {
 		this.team2 = team2;
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if(!(obj instanceof Match)){
+			return false;
+		}
+		Match match = (Match) obj;
+		return team1.equals(match.team1) && team2.equals(match.team2);
+	}
 }

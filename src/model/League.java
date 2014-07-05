@@ -40,5 +40,14 @@ public class League {
 	public List<Match> getMatches() {
 		return matches;
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if(!(obj instanceof League)){
+			return false;
+		}
+		League league = (League) obj;
+		return name.equals(league.name);
+	}
 
 }

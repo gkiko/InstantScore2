@@ -3,6 +3,7 @@
    {
       "fileName":"tets1",
       "parameter":"today",
+      "observable":true,
       "url":[
          "http://www.livescore.com/soccer/"
       ],
@@ -13,6 +14,7 @@
    {
       "fileName":"tets2",
       "parameter":"future",
+      "observable":false,
       "url":[
          "http://www.livescore.com/soccer/",
          "http://www.livescore.com/soccer/",

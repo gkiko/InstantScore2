@@ -18,5 +18,28 @@
 			<attribute name="javadoc_location" value="jar:file:/Users/gkiko/Workspace/InstantScore2/WebContent/WEB-INF/lib/google-gson-2.2.4/gson-2.2.4-javadoc.jar!/"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/sqlite-jdbc-3.7.2/sqlite-jdbc-3.7.2.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:file:/Users/gkiko/Workspace/InstantScore2/WebContent/WEB-INF/lib/sqlite-jdbc-3.7.2/sqlite-jdbc-3.7.2-javadoc.jar!/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/jsoup-1.7.3/jsoup-1.7.3.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:file:/Users/gkiko/Workspace/InstantScore2/WebContent/WEB-INF/lib/jsoup-1.7.3/jsoup-1.7.3-javadoc.jar!/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/bonecp-0.8.0/guava-17.0.jar"/>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/bonecp-0.8.0/bonecp-0.8.0.RELEASE.jar" sourcepath="WebContent/WEB-INF/lib/bonecp-0.8.0/bonecp-0.8.0.RELEASE-sources.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:file:/Users/gkiko/Workspace/InstantScore2/WebContent/WEB-INF/lib/bonecp-0.8.0/bonecp-0.8.0.RELEASE-javadoc.jar!/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/slf4j-1.7.7/slf4j-api-1.7.7.jar" sourcepath="WebContent/WEB-INF/lib/slf4j-1.7.7/slf4j-api-1.7.7-sources.jar"/>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/slf4j-1.7.7/slf4j-simple-1.7.7.jar" sourcepath="WebContent/WEB-INF/lib/slf4j-1.7.7/slf4j-simple-1.7.7-sources.jar"/>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/twilio-java-sdk-3.4.5/twilio-java-sdk-3.4.5-jar-with-dependencies.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:file:/Users/gkiko/Workspace/InstantScore2/WebContent/WEB-INF/lib/twilio-java-sdk-3.4.5/twilio-java-sdk-3.4.5-javadoc.jar%20.jar!/"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

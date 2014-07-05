@@ -4,13 +4,19 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 
 import model.League;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
 
 
-public class DataSaver {
+public class DataSaver extends Observable{
+	private static final Logger logger = LoggerFactory.getLogger(DataSaver.class);
 	private File file;
 	private List<String> listOfUrls;
 	private Parser p;
@@ -29,6 +35,9 @@ public class DataSaver {
 			list = p.parse(url);
 			mainList.addAll(list);
 		}
+		
+		setChanged();
+		notifyObservers(mainList);
 		String json = gson.toJson(mainList);
 		fileWrite(json);
 	}
@@ -42,6 +51,15 @@ public class DataSaver {
 		}finally{
 			writer.flush();
 			writer.close();
+		}
+	}
+	
+	@Override
+	public synchronized void addObserver(Observer o) {
+		try{
+			super.addObserver(o);
+		}catch (Throwable t){
+			logger.warn("error no observer set for "+ listOfUrls.toString());
 		}
 	}
 	

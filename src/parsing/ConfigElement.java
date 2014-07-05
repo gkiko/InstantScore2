@@ -8,7 +8,13 @@ public class ConfigElement {
 	String parser;
 	String period;
 	String timeUnit;
+	boolean observable;
+
 	List<String> url;
+
+	public boolean isObservable() {
+		return observable;
+	}
 
 	public String getFileName() {
 		return fileName;

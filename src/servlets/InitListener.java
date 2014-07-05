@@ -1,14 +1,19 @@
 package servlets;
 
 import java.io.InputStreamReader;
+import java.util.Observer;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Logger;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
+
+import notifier.UpdateNotifier;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import parsing.AsyncDataSaver;
 import parsing.ConfigObject;
@@ -17,14 +22,18 @@ import utils.ConfigUtils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import database.ConnectionPooler;
+
 /**
  * Application Lifecycle Listener implementation class InitListener
  *
  */
 @WebListener
 public class InitListener implements ServletContextListener {
-	private static final Logger LOGGER = Logger.getLogger(InitListener.class.getName());
-	private final AsyncDataSaver asyncDataSaver = new AsyncDataSaver();;
+	private static final Logger LOGGER = LoggerFactory.getLogger(InitListener.class);
+	private ScheduledExecutorService scheduledExecutorService;
+	private Observer observer = new UpdateNotifier();
+	private final AsyncDataSaver asyncDataSaver = new AsyncDataSaver();
 	
     /**
      * Default constructor. 
@@ -37,7 +46,9 @@ public class InitListener implements ServletContextListener {
      * @see ServletContextListener#contextInitialized(ServletContextEvent)
      */
     public void contextInitialized(final ServletContextEvent arg0) {
-    	ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
+    	ConnectionPooler.InitializePooler();
+    	
+    	scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
 		scheduledExecutorService.scheduleAtFixedRate(new Runnable() {
 			
 			@Override
@@ -48,6 +59,7 @@ public class InitListener implements ServletContextListener {
 				
 				ConfigUtils.modifyUrlFields(conf);
 				asyncDataSaver.stop();
+				asyncDataSaver.addObserver(observer);
 				asyncDataSaver.downloadAndSaveData(conf);
 				
 			}
@@ -58,7 +70,10 @@ public class InitListener implements ServletContextListener {
      * @see ServletContextListener#contextDestroyed(ServletContextEvent)
      */
     public void contextDestroyed(ServletContextEvent arg0) {
-        // TODO Auto-generated method stub
+    	asyncDataSaver.removeObserver();
+    	asyncDataSaver.stop();
+    	scheduledExecutorService.shutdown();
+    	ConnectionPooler.ReleasePooler();
     }
 	
 }
