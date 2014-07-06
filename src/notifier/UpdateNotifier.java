@@ -40,7 +40,7 @@ public class UpdateNotifier implements Observer{
 		}else{
 			this.newList = newList;
 			checkIfUpdated();
-			oldList = this.newList;
+			oldList = newList;
 		}
 	}
 	
@@ -53,7 +53,6 @@ public class UpdateNotifier implements Observer{
 			
 			subscriberPhoneNumbers = subscriberData.getSubscriberPhoneNumbersForMatch(diffData.getMatch());
 			for(String phoneNum : subscriberPhoneNumbers){
-				logger.info("test line");
 				msgSender.sendMsgToUser(msgText, phoneNum);
 			}
 		}

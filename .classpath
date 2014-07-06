@@ -35,11 +35,12 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/slf4j-1.7.7/slf4j-api-1.7.7.jar" sourcepath="WebContent/WEB-INF/lib/slf4j-1.7.7/slf4j-api-1.7.7-sources.jar"/>
-	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/slf4j-1.7.7/slf4j-simple-1.7.7.jar" sourcepath="WebContent/WEB-INF/lib/slf4j-1.7.7/slf4j-simple-1.7.7-sources.jar"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/twilio-java-sdk-3.4.5/twilio-java-sdk-3.4.5-jar-with-dependencies.jar">
 		<attributes>
 			<attribute name="javadoc_location" value="jar:file:/Users/gkiko/Workspace/InstantScore2/WebContent/WEB-INF/lib/twilio-java-sdk-3.4.5/twilio-java-sdk-3.4.5-javadoc.jar%20.jar!/"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/logback-1.1.2/logback-classic-1.1.2.jar" sourcepath="WebContent/WEB-INF/lib/logback-1.1.2/logback-classic-1.1.2-sources.jar"/>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/logback-1.1.2/logback-core-1.1.2.jar" sourcepath="WebContent/WEB-INF/lib/logback-1.1.2/logback-core-1.1.2-sources.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

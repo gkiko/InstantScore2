@@ -43,7 +43,7 @@ public class MsgSender {
 			params.add(new BasicNameValuePair("From", myPhoneNum));
 
 			Message message = messageFactory.create(params);
-			logger.debug("send success "+message.getAccountSid());
+			logger.debug("send success "+message.getSid());
 		} catch (TwilioRestException e) {
 			logger.error("message error", e);
 		}

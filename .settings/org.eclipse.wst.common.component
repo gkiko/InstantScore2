@@ -26,6 +26,12 @@
         <dependent-module archiveName="twilio-java-sdk-3.4.5-jar-with-dependencies.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/InstantScore2/WebContent/WEB-INF/lib/twilio-java-sdk-3.4.5/twilio-java-sdk-3.4.5-jar-with-dependencies.jar">
             <dependency-type>uses</dependency-type>
         </dependent-module>
+        <dependent-module archiveName="logback-classic-1.1.2.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/InstantScore2/WebContent/WEB-INF/lib/logback-1.1.2/logback-classic-1.1.2.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="logback-core-1.1.2.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/InstantScore2/WebContent/WEB-INF/lib/logback-1.1.2/logback-core-1.1.2.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
         <property name="context-root" value="InstantScore2"/>
         <property name="java-output-path" value="/InstantScore2/build/classes"/>
     </wb-module>
