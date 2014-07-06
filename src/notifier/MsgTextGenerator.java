@@ -8,13 +8,34 @@ public class MsgTextGenerator {
 
 	public String getMsgText(DiffData data) {
 		String team1, score, team2;
-		team1 = data.getMatch().getTeam1();
-		team2 = data.getMatch().getTeam2();
-		score = addBraketToChangedScore(data.getNewScore(), data.getOldScore());
-		return new StringBuilder(team1).append(" vs ").append(team2).append("  ").append(score).toString();
+		team1 = data.getNewMatch().getTeam1();
+		team2 = data.getNewMatch().getTeam2();
+		score = addBracketToScoreIfNeeded(data.getNewMatch().getScore(), data.getOldMatch().getScore());
+		return new StringBuilder(team1).append(getTimeUpdateText(data)).append(" vs ").append(team2).append("  ").append(score).toString();
 	}
 
-	public String addBraketToChangedScore(String sNew, String sOld) {
+	public String getTimeUpdateText(DiffData data) {
+		String currentTime = data.getNewMatch().getTime();
+		if(currentTime == null) {
+			return ""; // This should never happen
+		}
+		if(currentTime.equals("FT")) {
+			return "The match has finished.";
+		}
+		if(currentTime.equals("AET")) {
+			return "The match has finished in extra time.";
+		}
+		if(currentTime.indexOf("p") != -1) {
+			return "The match has been postponed.";
+		}
+		if(currentTime.indexOf("b") != -1) {
+			return "The match has been abandoned.";
+		}
+		// case for penalties TODO
+		return "";
+	}
+	
+	public String addBracketToScoreIfNeeded(String sNew, String sOld) {
 		String[] scoresNew = parseScore(sNew);
 		String[] scoresOld = parseScore(sOld);
 		
@@ -50,6 +71,6 @@ public class MsgTextGenerator {
 	
 	public static void main(String[] args) {
 		MsgTextGenerator asd = new MsgTextGenerator();
-		System.out.println(asd.addBraketToChangedScore("2-1", "1-0"));
+		System.out.println(asd.addBracketToScoreIfNeeded("2-1", "1-0"));
 	}
 }

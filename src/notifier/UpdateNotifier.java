@@ -44,14 +44,14 @@ public class UpdateNotifier implements Observer{
 		}
 	}
 	
-	private void checkIfUpdated(){
+	private void checkIfUpdated() {
 		String msgText;
 		List<String> subscriberPhoneNumbers;
 		List<DiffData> diffs = diffFinder.getDiffs(newList, oldList);
 		for(DiffData diffData : diffs){
 			msgText = msgTextGenerator.getMsgText(diffData);
 			
-			subscriberPhoneNumbers = subscriberData.getSubscriberPhoneNumbersForMatch(diffData.getMatch());
+			subscriberPhoneNumbers = subscriberData.getSubscriberPhoneNumbersForMatch(diffData.getNewMatch());
 			for(String phoneNum : subscriberPhoneNumbers){
 				msgSender.sendMsgToUser(msgText, phoneNum);
 			}

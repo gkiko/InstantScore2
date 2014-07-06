@@ -3,25 +3,22 @@ package notifier;
 import model.Match;
 
 public class DiffData {
-	private Match match;
-	private String oldScore;
-	private String newScore;
+	private Match oldMatch;
+	private Match newMatch;
 	
-	public DiffData(Match matchName, String oldScore, String newsScore){
-		this.match = matchName;
-		this.oldScore = oldScore;
-		this.newScore = newsScore;
+	public DiffData(Match oldMatch, Match newMatch){
+		this.oldMatch = oldMatch;
+		this.newMatch = newMatch;
 	}
 
-	public Match getMatch() {
-		return match;
+	public Match getOldMatch() {
+		return oldMatch;
 	}
 
-	public String getOldScore() {
-		return oldScore;
+	public Match getNewMatch() {
+		return newMatch;
 	}
+	
+	
 
-	public String getNewScore() {
-		return newScore;
-	}
 }

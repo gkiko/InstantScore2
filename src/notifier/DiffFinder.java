@@ -37,16 +37,58 @@ public class DiffFinder {
 	private void addMatchDiffs(League lNew, League lOLd, List<DiffData> diffs){
 		for(Match mNew : lNew.getMatches()){
 			for(Match mOld : lOLd.getMatches()){
-				if(mOld.equals(mNew) && scoreChanged(mOld, mNew)){
-					logger.debug("diff found "+mOld.getTeam1()+" vs "+mOld.getTeam2()+" score old-new "+mOld.getScore()+"/"+mNew.getScore());
-					diffs.add(new DiffData(mNew, mOld.getScore(), mNew.getScore()));
+				boolean sameMatch = mOld.equals(mNew);
+				if(!sameMatch) {
+					continue;
+				}
+				boolean scoreChanged = scoreChanged(mOld, mNew);
+				boolean timeChanged = timeChanged(mOld, mNew);
+				boolean noChange = (scoreChanged || timeChanged);
+				if(noChange) {
+					continue;
+				}
+				diffs.add(new DiffData(mOld, mNew));
+				if(scoreChanged && timeChanged){
+					logger.debug("diff found "+mOld.getTeam1()+" vs "+mOld.getTeam2()+": score old-new "+mOld.getScore()+"/"+mNew.getScore()+" "
+							+ " old time -> "+mOld.getTime()+", new time -> "+mNew.getTime());
+					diffs.add(new DiffData(mOld, mNew));
+				}
+				else if(scoreChanged) {
+					logger.debug("diff found "+mOld.getTeam1()+" vs "+mOld.getTeam2()+": score old-new "+mOld.getScore()+"/"+mNew.getScore());
+				}
+				else {
+					logger.debug("diff found on time for match "+mNew+": old -> "+mOld.getTime()+", new -> "+mNew.getTime());
+					
 				}
 			}
 		}
 	}
 	
+	/*
+	 * Checks that it's not the ?-? -> 0-0  case, which is an update corresponding a match start.
+	 */
+	private boolean isFirstUpdateOfMatchStart(Match m1, Match m2) {
+		return m1.getScore().indexOf("?")!=-1 && m2.getScore().indexOf("?")==-1 && m2.getScore().indexOf("1")==-1;
+	}
+	
 	private boolean scoreChanged(Match m1, Match m2){
-		return !m1.getScore().equals(m2.getScore());
+		return !m1.getScore().equals(m2.getScore()) && !isFirstUpdateOfMatchStart(m1, m2);
+	}
+	
+	private boolean isTimeStatusChange(String time) {
+		for(char digit='0'; digit<='9'; digit++) {
+			if(time.indexOf(digit) != -1) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	private boolean timeChanged(Match m1, Match m2) {
+		if(m1.getTime()==null || m2.getTime()==null) {
+			return !(m1.getTime()==null && m2.getTime()==null);
+		}
+		return !m1.getTime().equals(m2.getTime()) && isTimeStatusChange(m2.getTime());
 	}
 	
 }
