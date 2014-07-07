@@ -11,7 +11,8 @@ public class MsgTextGenerator {
 		team1 = data.getNewMatch().getTeam1();
 		team2 = data.getNewMatch().getTeam2();
 		score = addBracketToScoreIfNeeded(data.getNewMatch().getScore(), data.getOldMatch().getScore());
-		return new StringBuilder(team1).append(getTimeUpdateText(data)).append(" vs ").append(team2).append("  ").append(score).toString();
+		String timeUpdateString = getTimeUpdateText(data);
+		return new StringBuilder(team1).append(" vs ").append(team2).append("  ").append(score).append(timeUpdateString).toString();
 	}
 
 	public String getTimeUpdateText(DiffData data) {
@@ -25,10 +26,10 @@ public class MsgTextGenerator {
 		if(currentTime.equals("AET")) {
 			return "The match has finished in extra time.";
 		}
-		if(currentTime.indexOf("p") != -1) {
+		if(currentTime.contains("p")) {
 			return "The match has been postponed.";
 		}
-		if(currentTime.indexOf("b") != -1) {
+		if(currentTime.contains("b")) {
 			return "The match has been abandoned.";
 		}
 		// case for penalties TODO

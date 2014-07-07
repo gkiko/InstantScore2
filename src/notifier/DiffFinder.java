@@ -2,6 +2,8 @@ package notifier;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,22 +45,20 @@ public class DiffFinder {
 				}
 				boolean scoreChanged = scoreChanged(mOld, mNew);
 				boolean timeChanged = timeChanged(mOld, mNew);
-				boolean noChange = (scoreChanged || timeChanged);
-				if(noChange) {
+				boolean anyChange = (scoreChanged || timeChanged);
+				if(!anyChange) {
 					continue;
 				}
 				diffs.add(new DiffData(mOld, mNew));
 				if(scoreChanged && timeChanged){
 					logger.debug("diff found "+mOld.getTeam1()+" vs "+mOld.getTeam2()+": score old-new "+mOld.getScore()+"/"+mNew.getScore()+" "
 							+ " old time -> "+mOld.getTime()+", new time -> "+mNew.getTime());
-					diffs.add(new DiffData(mOld, mNew));
 				}
 				else if(scoreChanged) {
 					logger.debug("diff found "+mOld.getTeam1()+" vs "+mOld.getTeam2()+": score old-new "+mOld.getScore()+"/"+mNew.getScore());
 				}
 				else {
 					logger.debug("diff found on time for match "+mNew+": old -> "+mOld.getTime()+", new -> "+mNew.getTime());
-					
 				}
 			}
 		}
@@ -68,20 +68,24 @@ public class DiffFinder {
 	 * Checks that it's not the ?-? -> 0-0  case, which is an update corresponding a match start.
 	 */
 	private boolean isFirstUpdateOfMatchStart(Match m1, Match m2) {
-		return m1.getScore().indexOf("?")!=-1 && m2.getScore().indexOf("?")==-1 && m2.getScore().indexOf("1")==-1;
+		boolean oldMatchNotStared = m1.getScore().contains("?");
+		boolean newMatchStarted = m2.getScore().contains("?");
+		boolean neitherTeamScored = !m2.getScore().contains("1"); // the assumption here is that if it's not 0-0 after ?-?, then it's 1-0 or 0-1 case.
+		// Probability that it happens is less than 0.01%, while the probability that a team scores 2 goals after ?-? is less than 0.
+
+		return oldMatchNotStared && newMatchStarted && neitherTeamScored;
 	}
 	
 	private boolean scoreChanged(Match m1, Match m2){
 		return !m1.getScore().equals(m2.getScore()) && !isFirstUpdateOfMatchStart(m1, m2);
 	}
 	
-	private boolean isTimeStatusChange(String time) {
-		for(char digit='0'; digit<='9'; digit++) {
-			if(time.indexOf(digit) != -1) {
-				return false;
-			}
-		}
-		return true;
+	// checks whether a string consists of just non-digits. If it's the case, then the time status has changed (it's either HT, FT or AET)
+	private boolean isTimeStatusChange(String currentTime) {
+		String regexString = "[0-9]+";
+		Pattern pattern = Pattern.compile(regexString);
+		Matcher matcher = pattern.matcher(currentTime);
+		return !matcher.find();
 	}
 	
 	private boolean timeChanged(Match m1, Match m2) {
@@ -90,5 +94,5 @@ public class DiffFinder {
 		}
 		return !m1.getTime().equals(m2.getTime()) && isTimeStatusChange(m2.getTime());
 	}
-	
+		
 }
