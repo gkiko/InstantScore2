@@ -14,6 +14,8 @@ import model.Match;
 public class DiffFinder {
 	static final Logger logger = LoggerFactory.getLogger(DiffFinder.class);
 	
+	private static final Pattern DIGITS_PATTERN = Pattern.compile("[0-9]+");
+	
 	public List<DiffData> getDiffs(List<League> newList, List<League> oldList){
 		List<DiffData> leaguePairs = findDiffs(newList, oldList);
 		
@@ -82,9 +84,7 @@ public class DiffFinder {
 	
 	// checks whether a string consists of just non-digits. If it's the case, then the time status has changed (it's either HT, FT or AET)
 	private boolean isTimeStatusChange(String currentTime) {
-		String regexString = "[0-9]+";
-		Pattern pattern = Pattern.compile(regexString);
-		Matcher matcher = pattern.matcher(currentTime);
+		Matcher matcher = DIGITS_PATTERN.matcher(currentTime);
 		return !matcher.find();
 	}
 	
