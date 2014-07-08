@@ -14,15 +14,11 @@ import model.Match;
 public class DiffFinder {
 	static final Logger logger = LoggerFactory.getLogger(DiffFinder.class);
 	
-	private static final Pattern DIGITS_PATTERN = Pattern.compile("[0-9]+");
+	static final Pattern onlyUppercaseLetters = Pattern.compile("[A-Z]*");
+	static final Pattern matchFirstUpdatePattern = Pattern.compile("[0|\\?][^0-9\\?]*[0|\\?]");
 	
 	public List<DiffData> getDiffs(List<League> newList, List<League> oldList){
 		List<DiffData> leaguePairs = findDiffs(newList, oldList);
-		
-//		Match tst = new Match();
-//		tst.setTeam1("sir");
-//		tst.setTeam2("trak");
-//		leaguePairs.add(new DiffData(tst, "0-0", "0-1"));
 		return leaguePairs;
 	}
 	
@@ -69,30 +65,35 @@ public class DiffFinder {
 	/*
 	 * Checks that it's not the ?-? -> 0-0  case, which is an update corresponding a match start.
 	 */
-	private boolean isFirstUpdateOfMatchStart(Match m1, Match m2) {
-		boolean oldMatchNotStared = m1.getScore().contains("?");
-		boolean newMatchStarted = m2.getScore().contains("?");
-		boolean neitherTeamScored = !m2.getScore().contains("1"); // the assumption here is that if it's not 0-0 after ?-?, then it's 1-0 or 0-1 case.
-		// Probability that it happens is less than 0.01%, while the probability that a team scores 2 goals after ?-? is less than 0.
-
-		return oldMatchNotStared && newMatchStarted && neitherTeamScored;
+	private boolean noGoal(Match m2) {
+		Matcher matcher = matchFirstUpdatePattern.matcher(m2.getScore());
+		return !matcher.find();
 	}
 	
 	private boolean scoreChanged(Match m1, Match m2){
-		return !m1.getScore().equals(m2.getScore()) && !isFirstUpdateOfMatchStart(m1, m2);
+		return !m1.getScore().equals(m2.getScore()) && noGoal(m2);
 	}
 	
 	// checks whether a string consists of just non-digits. If it's the case, then the time status has changed (it's either HT, FT or AET)
-	private boolean isTimeStatusChange(String currentTime) {
-		Matcher matcher = DIGITS_PATTERN.matcher(currentTime);
-		return !matcher.find();
+	private boolean isOnlyLetters(String currentTime) {
+		Matcher matcher = onlyUppercaseLetters.matcher(currentTime);
+		return matcher.find();
 	}
 	
 	private boolean timeChanged(Match m1, Match m2) {
 		if(m1.getTime()==null || m2.getTime()==null) {
 			return !(m1.getTime()==null && m2.getTime()==null);
 		}
-		return !m1.getTime().equals(m2.getTime()) && isTimeStatusChange(m2.getTime());
+		return !m1.getTime().equals(m2.getTime()) && !isOnlyLetters(m2.getTime());
+	}
+	
+	public static void main(String[] args) {
+		DiffFinder asd = new DiffFinder();
+		Match m1 = new Match();
+		m1.setScore("?-?");
+		Match m2 = new Match();
+		m2.setScore("0-1");
+		System.out.println(asd.scoreChanged(m1, m2));
 	}
 		
 }
