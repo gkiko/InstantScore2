@@ -12,4 +12,16 @@ public class SubscriberData {
 		list.add("+995595150038");
 		return list;
 	}
+	
+	public void saveCodeForUser(String phoneNum, String code) {
+		
+	}
+	
+	public String getLastCodeRequestTime(String phoneNum){
+		return "";
+	}
+	
+	public void saveMatchForUser(String phoneNum, String matchId){
+		
+	}
 }

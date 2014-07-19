@@ -23,7 +23,7 @@ public class MsgSender {
 	static MsgSender msgSender;
 	private static TwilioRestClient client;
 
-	public static MsgSender init() {
+	public static MsgSender getInstance() {
 		if (msgSender == null) {
 			msgSender = new MsgSender();
 		}

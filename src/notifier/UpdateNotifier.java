@@ -28,7 +28,7 @@ public class UpdateNotifier implements Observer{
 		diffFinder = new DiffFinder();
 		msgTextGenerator = new MsgTextGenerator();
 		subscriberData = new SubscriberData();
-		msgSender = MsgSender.init();
+		msgSender = MsgSender.getInstance();
 	}
 
 	@Override
