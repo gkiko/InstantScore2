@@ -51,21 +51,11 @@ public class Match {
 	}
 	
 	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result1 = 1;
-		int result2 = 1;
-		result1 = prime * result1 + ((team1 == null) ? 0 : team1.hashCode());
-		result2 = prime * result2 + ((team2 == null) ? 0 : team2.hashCode());
-		return result1+result2;
-	}
-	
-	@Override
 	public boolean equals(Object obj) {
 		if(!(obj instanceof Match)){
 			return false;
 		}
 		Match match = (Match) obj;
-		return (team1.equals(match.team1) && team2.equals(match.team2)) || (team1.equals(match.team2) && team2.equals(match.team1));
+		return team1.equals(match.team1) && team2.equals(match.team2);
 	}
 }

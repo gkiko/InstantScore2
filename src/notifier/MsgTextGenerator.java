@@ -4,15 +4,14 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class MsgTextGenerator {
-	static final Pattern digitsPattern = Pattern.compile("[0-9]*");
+	static final Pattern pattern = Pattern.compile("[0-9]*");
 
 	public String getMsgText(DiffData data) {
-		String team1, score, team2, timeUpdateMsg;
+		String team1, score, team2;
 		team1 = data.getNewMatch().getTeam1();
 		team2 = data.getNewMatch().getTeam2();
 		score = addBracketToScoreIfNeeded(data.getNewMatch().getScore(), data.getOldMatch().getScore());
-		timeUpdateMsg = getTimeUpdateText(data);
-		return new StringBuilder(team1).append(" vs ").append(team2).append("  ").append(score).append(timeUpdateMsg).toString();
+		return new StringBuilder(team1).append(getTimeUpdateText(data)).append(" vs ").append(team2).append("  ").append(score).toString();
 	}
 
 	public String getTimeUpdateText(DiffData data) {
@@ -26,10 +25,10 @@ public class MsgTextGenerator {
 		if(currentTime.equals("AET")) {
 			return "The match has finished in extra time.";
 		}
-		if(currentTime.contains("p")) {
+		if(currentTime.indexOf("p") != -1) {
 			return "The match has been postponed.";
 		}
-		if(currentTime.contains("b")) {
+		if(currentTime.indexOf("b") != -1) {
 			return "The match has been abandoned.";
 		}
 		// case for penalties TODO
@@ -51,7 +50,7 @@ public class MsgTextGenerator {
 		int index = 0;
 		String[] arr = new String[2];
 		String matched;
-		Matcher matcher = digitsPattern.matcher(score);
+		Matcher matcher = pattern.matcher(score);
 		while (matcher.find()) {
 			matched = matcher.group();
 			if(!matched.isEmpty()){

@@ -40,7 +40,7 @@ public class DataProvider extends HttpServlet {
 		
 		fileParameter = request.getParameter("type");
 		fileName = config.getFileName(fileParameter);
-
+//		System.out.println(fileParameter+" "+fileName);
 		f = new File(fileName);
 		FileInputStream in = new FileInputStream(f);
 		IOUtils.copy(in, response.getOutputStream());
@@ -50,16 +50,7 @@ public class DataProvider extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String requestType;
-		requestType = request.getParameter("type");
-		
-		if(requestType.equals("new_code")){
-			
-		}else{
-			if(requestType.equals("submit_game")){
-				
-			}
-		}
+		// TODO Auto-generated method stub
 	}
 
 }
