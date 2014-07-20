@@ -18,7 +18,7 @@ public class SubscriberData {
 	}
 	
 	public String getLastCodeRequestTime(String phoneNum){
-		return "";
+		return "2014-07-19 11:00:00";
 	}
 	
 	public void saveMatchForUser(String phoneNum, String matchId){

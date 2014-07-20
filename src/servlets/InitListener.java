@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 
 import parsing.AsyncDataSaver;
 import parsing.ConfigObject;
+import subscribtion.SubscribtionManager;
 import utils.ConfigUtils;
 
 import com.google.gson.Gson;
@@ -31,9 +32,10 @@ import database.ConnectionPooler;
 @WebListener
 public class InitListener implements ServletContextListener {
 	private static final Logger LOGGER = LoggerFactory.getLogger(InitListener.class);
+	private final AsyncDataSaver asyncDataSaver = new AsyncDataSaver();
 	private ScheduledExecutorService scheduledExecutorService;
 	private Observer observer = new UpdateNotifier();
-	private final AsyncDataSaver asyncDataSaver = new AsyncDataSaver();
+	private SubscribtionManager subscribtionManager = SubscribtionManager.getInstance();
 	
     /**
      * Default constructor. 
@@ -46,6 +48,7 @@ public class InitListener implements ServletContextListener {
      * @see ServletContextListener#contextInitialized(ServletContextEvent)
      */
     public void contextInitialized(final ServletContextEvent arg0) {
+    	arg0.getServletContext().setAttribute("subscribtion_manager", subscribtionManager);
     	ConnectionPooler.InitializePooler();
     	
     	scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();

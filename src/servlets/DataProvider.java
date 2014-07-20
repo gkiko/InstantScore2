@@ -11,14 +11,19 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.tomcat.util.http.fileupload.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import parsing.ConfigObject;
+import subscribtion.Result;
+import subscribtion.SubscribtionManager;
 
 /**
  * Servlet implementation class DataProvider
  */
 @WebServlet("/DataProvider")
 public class DataProvider extends HttpServlet {
+	private static final Logger LOGGER = LoggerFactory.getLogger(DataProvider.class);
 	private static final long serialVersionUID = 1L;
        
     /**
@@ -50,15 +55,26 @@ public class DataProvider extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String requestType;
+		Result res = null;
+		SubscribtionManager subscribtionManager;
+		String requestType, phoneNum, code, matchId;
 		requestType = request.getParameter("type");
+		subscribtionManager = (SubscribtionManager) getServletContext().getAttribute("subscribtion_manager");
 		
+		phoneNum = request.getParameter("phone_num");
 		if(requestType.equals("new_code")){
-			
+			res = subscribtionManager.fulfilCodeRequest(phoneNum);
 		}else{
 			if(requestType.equals("submit_game")){
-				
+				code = request.getParameter("security_code");
+				matchId = request.getParameter("match_id");
+				res = subscribtionManager.fulfilSubscribtionRequest(phoneNum, code, matchId);
 			}
+		}
+		
+		if(!res.isValid()){
+			LOGGER.debug("sending error 400 to user: "+phoneNum);
+			response.sendError(400, res.getErrorMessage());
 		}
 	}
 

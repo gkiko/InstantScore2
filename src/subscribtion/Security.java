@@ -59,10 +59,12 @@ public class Security {
 	public Result eligibleForSubscription(String phoneNum, String code) {
 		Result res = new Result();
 		if(!securityCodeValid(phoneNum, code)){
+			LOGGER.debug("security code invalid");
 			res.setErrorMessage("invalid security code");
 			return res;
 		}
 		if(messageLimitReached(phoneNum)){
+			LOGGER.debug("message limit reached");
 			res.setErrorMessage("message limit reached");
 			return res;
 		}
@@ -71,7 +73,7 @@ public class Security {
 	}
 	
 	private boolean securityCodeValid(String phoneNum, String code) {
-		return false;
+		return true;
 	}
 	
 	private boolean messageLimitReached(String phoneNum){

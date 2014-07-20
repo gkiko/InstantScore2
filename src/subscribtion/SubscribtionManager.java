@@ -1,9 +1,14 @@
 package subscribtion;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import servlets.InitListener;
 import notifier.MsgSender;
 import database.SubscriberData;
 
 public class SubscribtionManager {
+	private static final Logger LOGGER = LoggerFactory.getLogger(SubscribtionManager.class);
 	private static SubscribtionManager subscribtionManager;
 	private Security securityManger;
 	private SubscriberData subscriberData;
@@ -22,24 +27,29 @@ public class SubscribtionManager {
 		return subscribtionManager;
 	}
 	
-	public void fulfilCodeRequest(String phoneNum) {
+	public Result fulfilCodeRequest(String phoneNum) {
 		Result res;
 		String code;
 		res = securityManger.tryGenerateCode(phoneNum);
 		if(!res.isValid()){
-			// return error
+			LOGGER.debug("code request by "+phoneNum +" wasn't satisfied");
+			return res;
 		}
 		code = res.getResult();
+		LOGGER.debug(phoneNum+" requested code: "+code);
 		subscriberData.saveCodeForUser(phoneNum, code);
 		msgSender.sendMsgToUser("Your security code: "+code, phoneNum);
+		return res;
 	}
 	
-	public void fulfilSubscribtionRequest(String phoneNum, String code, String matchId) throws Exception{
+	public Result fulfilSubscribtionRequest(String phoneNum, String code, String matchId) {
 		Result res;
 		res = securityManger.eligibleForSubscription(phoneNum, code);
 		if(!res.isValid()){
-			// return error
+			LOGGER.debug("subscribtion request by "+phoneNum +" wasn't satisfied");
+			return res;
 		}
 		subscriberData.saveMatchForUser(phoneNum, matchId);
+		return res;
 	}
 }

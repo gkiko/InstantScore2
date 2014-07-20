@@ -1,6 +1,6 @@
 package subscribtion;
 
-class Result {
+public class Result {
 	private String res, error;
 	
 	public Result(String res){
