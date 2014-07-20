@@ -1,5 +1,7 @@
 package subscribtion;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -8,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import utils.Utils;
+import database.DbManager;
 import database.SubscriberData;
 
 public class Security {
@@ -73,10 +76,23 @@ public class Security {
 	}
 	
 	private boolean securityCodeValid(String phoneNum, String code) {
-		return true;
+		if(code == null) {
+			return false;
+		}
+		try {
+			ResultSet rset = DbManager.getInstance().getCodeByUser(phoneNum);
+			if(rset.next()) {
+				String codeFromDB = rset.getString("code");
+				return code.equals(codeFromDB);
+			}
+		}
+		catch(SQLException ex) {
+			return false;
+		}
+		return false;
 	}
 	
-	private boolean messageLimitReached(String phoneNum){
+	private boolean messageLimitReached(String phoneNum){		
 		return false;
 	}
 	

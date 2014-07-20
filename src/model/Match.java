@@ -50,6 +50,10 @@ public class Match {
 		this.team2 = team2;
 	}
 	
+	public String getMatchId() {
+		return team1 + " vs " + team2;
+	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -67,5 +71,10 @@ public class Match {
 		}
 		Match match = (Match) obj;
 		return (team1.equals(match.team1) && team2.equals(match.team2)) || (team1.equals(match.team2) && team2.equals(match.team1));
+	}
+	
+	@Override
+	public String toString() {
+		return getMatchId() + " " + score + " " + time;
 	}
 }
