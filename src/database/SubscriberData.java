@@ -1,26 +1,31 @@
 package database;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 import model.Match;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import utils.Utils;
+
 public class SubscriberData {
+	static final Logger logger = LoggerFactory.getLogger(SubscriberData.class);
+	
 	public List<String> getSubscriberPhoneNumbersForMatch(Match matchId){
-		List<String> list = new ArrayList<String>();
+		List<String> users = null;
 		try{
-			ResultSet rset = DbManager.getInstance().getUsersByMatch(matchId.getMatchId());
-			while(rset.next()) {
-				String phoneNumber = rset.getString("user_num");
-				list.add("'"+phoneNumber+"'");
-			}
+			users = DbManager.getInstance().getUsersByMatch(matchId.getMatchId());
 		}
 		catch(SQLException ex) {
-			list.add("'+995595150038'");
+			logger.error(ex.toString());
 		}
-		return list;
+		if(users == null){
+			users = new ArrayList<String>();
+		}
+		return users;
 	}
 	
 	public void saveCodeForUser(String phoneNum, String code) {
@@ -33,14 +38,17 @@ public class SubscriberData {
 	}
 	
 	public String getLastCodeRequestTime(String phoneNum){
+		String date = "2014-07-19 11:00:00", tmpDate;
 		try{
-			String date = DbManager.getInstance().getLatestCodeRequestDate("'"+phoneNum+"'");
-			return date;
+			tmpDate = DbManager.getInstance().getLatestCodeRequestDate("'"+phoneNum+"'");
+			if (tmpDate != null) {
+				date = tmpDate;
+			}
 		}
 		catch(SQLException ex) {
-			// default value
-			return "2014-07-19 11:00:00";
+			logger.error(ex.toString());
 		}
+		return date;
 	}
 	
 	public void saveMatchForUser(String phoneNum, String matchId){
@@ -51,16 +59,16 @@ public class SubscriberData {
 			ex.printStackTrace();
 		}
 	}
-
-	public static void main(String[] args) {
-		DbManager db = DbManager.getInstance();
-		try{
-			db.addCodeForUser("CODE", "GELA_NUMBER");
-			db.addCodeForUser("CODE2", "GELA_NUMBER2");
-		}
-		catch(SQLException ex) {
-			
-		}
-	}
 	
+	public String getCodeByUser(String phoneNum){
+		String code = "000000";
+		try {
+			code = DbManager.getInstance().getCodeByUser("'"+phoneNum+"'");
+			code = Utils.removeQuotesAround(code);
+		} catch (SQLException e) {
+			logger.error(e.toString());
+		}
+		return code;
+	}
+
 }

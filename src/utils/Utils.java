@@ -27,4 +27,8 @@ public class Utils {
 	    }
 	    return new String(digits);
 	}
+	
+	public static String removeQuotesAround(String str){
+		return str.substring(1, str.length()-1);
+	}
 }
