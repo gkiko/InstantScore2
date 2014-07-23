@@ -15,7 +15,7 @@ import com.twilio.sdk.resource.instance.Message;
 
 public class MsgSender {
 	static final Logger logger = LoggerFactory.getLogger(MsgSender.class);
-	
+	public static final int MESSAGE_LIMIT_PER_DAY = 30;
 	static final String authToken = "0c863eb8b4328910e1c657ec7988b4ef";
 	static final String accountSid = "AC5a22a858703af1d045951b8649d65a82";
 	static final String myPhoneNum = "+15005550006";

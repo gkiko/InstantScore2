@@ -24,6 +24,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import database.ConnectionPooler;
+import database.DbManager;
 
 /**
  * Application Lifecycle Listener implementation class InitListener
@@ -67,6 +68,13 @@ public class InitListener implements ServletContextListener {
 				
 			}
 		}, 0, 1, TimeUnit.DAYS);
+//		System.out.println("main...");
+//		try{
+//			DbManager.main(null);
+//		}
+//		catch(Exception ex) {
+//			ex.printStackTrace();
+//		}
     }
 
 	/**

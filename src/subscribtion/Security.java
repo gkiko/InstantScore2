@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import utils.Utils;
+import database.DbManager;
 import database.SubscriberData;
 
 public class Security {
@@ -82,8 +83,8 @@ public class Security {
 		return code.equals(codeFromDb);
 	}
 	
-	private boolean messageLimitReached(String phoneNum){		
-		return false;
+	private boolean messageLimitReached(String phoneNum){
+		return DbManager.getInstance().isMessageLimitFullForUser(phoneNum);
 	}
 	
 }
