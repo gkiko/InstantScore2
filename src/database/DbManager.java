@@ -5,13 +5,14 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class DbManager {
 	final String LAST_MESSAGE_DATE = "select last_date from message_user where user_num = ?";
 	final String SENT_MESSAGES_QUANTITY = "select quantity from message_user where user_num = ?";
-	final String UPDATE_MESSAGES_QUANTITY = "update message_user set quantity = ? , last_date = datetime('now', 'localtime')  where user_num = ?";
-	final String INSERT_USER_INTO_MESSAGES = "insert into message_user (user_num, quantity, last_date) values (?, 1, datetime('now', 'localtime'))";
+	final String UPDATE_MESSAGES_QUANTITY = "update message_user set quantity = ? , last_date = ?  where user_num = ?";
+	final String INSERT_USER_INTO_MESSAGES = "insert into message_user (user_num, quantity, last_date) values (?, 1, ?)";
 	final String USER_LIST_BY_MATCH = "select user_num from match_user where match_id = ?";
 	final String ADD_MATCH_FOR_USER = "insert into match_user (match_id, user_num) values(?,?)";
 	final String CODE_BY_USER = "select code, time_stamp from user_code where user_num = ?";
@@ -105,11 +106,13 @@ public class DbManager {
 		prepareStatement(stmt, "'"+phoneNumber+"'");
 		
 		ResultSet rSet = stmt.executeQuery();
-	    closeConnectionAndStatement(conn, stmt);
-	    if(!rSet.next()) {
-			return null;
+		String lastDate = null;
+		if(rSet.next()) {
+			lastDate = rSet.getString("last_date");
 		}
-		return rSet.getString("last_date");
+	    closeConnectionAndStatement(conn, stmt);
+	    try { rSet.close(); } catch (SQLException quiet) {}
+		return lastDate;
 	}
 	
 	private void incrementMessageForUser(String userPhoneNumber) throws SQLException {
@@ -117,13 +120,15 @@ public class DbManager {
 		Connection conn = ConnectionPooler.GetConnection();
 		PreparedStatement stmt;
 		if(numSent==0) {
+			System.out.println("inserting for the first time "+userPhoneNumber);
 			stmt = conn.prepareStatement(INSERT_USER_INTO_MESSAGES);
-			prepareStatement(stmt, "'"+userPhoneNumber+"'");
+			prepareStatement(stmt, "'"+userPhoneNumber+"'", getCurrentDayDate());
 		}
 		else {
+			System.out.println("updating already existing one for "+userPhoneNumber+" with "+(numSent+1));
 			numSent++;
 			stmt = conn.prepareStatement(UPDATE_MESSAGES_QUANTITY);
-			prepareStatement(stmt, ""+numSent, "'"+userPhoneNumber+"'");
+			prepareStatement(stmt, ""+numSent, getCurrentDayDate(), "'"+userPhoneNumber+"'");
 		}
 		
 		stmt.executeUpdate();
@@ -143,11 +148,15 @@ public class DbManager {
 		prepareStatement(stmt, "'"+phoneNumber+"'");
 		
 		ResultSet rset = stmt.executeQuery();
-		closeConnectionAndStatement(conn, stmt);
-	    if(!rset.next()) {
-			return 0;
-		}
-		return Integer.parseInt(rset.getString("quantity"));
+		int quantity = 0;
+	    if(rset.next()) {
+	    	quantity = Integer.parseInt(rset.getString("quantity"));
+	    }
+	    
+	    closeConnectionAndStatement(conn, stmt);
+	    try { rset.close(); } catch(SQLException quiet) { }
+		
+	    return quantity;
 	}
 	
 	public boolean isMessageLimitFullForUser(String userPhoneNumber) {
@@ -181,19 +190,24 @@ public class DbManager {
 		return false;
 	}
 	
-	public String getCurrentDate() throws SQLException {
+	public String getCurrentDayDate() throws SQLException {
 		Connection conn = ConnectionPooler.GetConnection();
-		PreparedStatement stmt = conn.prepareStatement("select date('now')");
+		PreparedStatement stmt = conn.prepareStatement("select datetime('now', 'localtime')");
 		prepareStatement(stmt);
 		
 		ResultSet rset = stmt.executeQuery();
-		closeConnectionAndStatement(conn, stmt);
+		String date = null;
 	    if(!rset.next()) {
 	    	try{ rset.close(); } catch(SQLException quiet) {}
+	    	closeConnectionAndStatement(conn, stmt);
 			return null;
 		}
-		String date = rset.getString(1);
-		if(rset!=null) try{ rset.close(); } catch(SQLException quiet) {}
+	    date = rset.getString(1);
+	    date = date.substring(0, date.indexOf(" ")); // for example, changes 2014-07-23 16:19 to just 2014-07-23
+
+	    closeConnectionAndStatement(conn, stmt);
+		try{ rset.close(); } catch(SQLException quiet) {}
+		
 		return date;
 	}
 	
@@ -203,12 +217,11 @@ public class DbManager {
 	}
 	
 	public static void main(String[] args) throws SQLException, InterruptedException {
+		System.out.println(new Date().toString());
     	ConnectionPooler.InitializePooler();
-		String date1 = DbManager.getInstance().getCurrentDate();
-		Thread.sleep(3000);
-		String date2 = DbManager.getInstance().getCurrentDate();
-		System.out.println(date1);
-		System.out.println(date2);
+		System.out.println(DbManager.getInstance().isMessageLimitFullForUser("+995"));
+		System.out.println(DbManager.getInstance().checkForMessageLimitAndUpdate("+995"));
+		System.out.println(DbManager.getInstance().getLastSentMessageDate("+995"));
 	}
 	
 }
