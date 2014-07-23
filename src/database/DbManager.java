@@ -17,7 +17,9 @@ public class DbManager {
 	final String ADD_MATCH_FOR_USER = "insert into match_user (match_id, user_num) values(?,?)";
 	final String CODE_BY_USER = "select code, time_stamp from user_code where user_num = ?";
 	final String ADD_CODE_FOR_USER = "insert into user_code (code, user_num, time_stamp) values (?,?, datetime('now','localtime'))";
-	final String SELECT_REQUEST_DATES_FOR_USR = "select time_stamp from user_code where user_num = ?"; 
+	final String SELECT_REQUEST_DATES_FOR_USR = "select time_stamp from user_code where user_num = ?";
+	final String SELECT_MATCH_BY_ID_FOR_USER = "select * from match_user where match_id = ? and user_num = ?";
+	
 	private static DbManager dbManager;
 	
 	public static DbManager getInstance(){
@@ -61,7 +63,22 @@ public class DbManager {
 		return users;
 	}
 	
+	public boolean matchIsAlreadyAddedForUser(String matchId, String user) throws SQLException {
+		Connection conn = ConnectionPooler.GetConnection();
+		PreparedStatement stmt = conn.prepareStatement(SELECT_MATCH_BY_ID_FOR_USER);
+		prepareStatement(stmt, matchId, user);
+		
+		ResultSet rSet = stmt.executeQuery();
+		boolean found = rSet.next();
+		closeConnectionAndStatement(conn, stmt);
+		try { rSet.close(); } catch(SQLException quiet) {}
+		return found;
+	}
+	
 	public void addMatchForUser(String matchId, String user) throws SQLException{
+		if(matchIsAlreadyAddedForUser(matchId, user)) {
+			return; // no need to add the same match again
+		}
 		Connection conn = ConnectionPooler.GetConnection();
 		PreparedStatement stmt = conn.prepareStatement(ADD_MATCH_FOR_USER);
 		prepareStatement(stmt, matchId, user);
@@ -219,9 +236,8 @@ public class DbManager {
 	public static void main(String[] args) throws SQLException, InterruptedException {
 		System.out.println(new Date().toString());
     	ConnectionPooler.InitializePooler();
-		System.out.println(DbManager.getInstance().isMessageLimitFullForUser("+995"));
-		System.out.println(DbManager.getInstance().checkForMessageLimitAndUpdate("+995"));
-		System.out.println(DbManager.getInstance().getLastSentMessageDate("+995"));
+    	for(int i=0; i<3; i++)
+    		DbManager.getInstance().addMatchForUser("a vs b", "+995");
 	}
 	
 }
