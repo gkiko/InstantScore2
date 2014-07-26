@@ -10,7 +10,8 @@ import com.jolbox.bonecp.BoneCPConfig;
 
 public class ConnectionPooler {
 	final static Logger logger = LoggerFactory.getLogger(ConnectionPooler.class);
-	final static String dbURL = "jdbc:sqlite:/Users/Lasha/Documents/workEE/InstantScore2/product.db";
+	// /Users/Lasha/Documents/workEE/InstantScore2/product.db
+	final static String dbURL = "jdbc:sqlite:/Users/gkiko/Workspace/InstantScore2/product.db";
 	private static BoneCP connectionPool;
 
 	public static void InitializePooler() {

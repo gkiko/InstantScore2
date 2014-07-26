@@ -1,10 +1,10 @@
 package subscribtion;
 
+import notifier.MsgSender;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import servlets.InitListener;
-import notifier.MsgSender;
 import database.SubscriberData;
 
 public class SubscribtionManager {
@@ -44,9 +44,14 @@ public class SubscribtionManager {
 	
 	public Result fulfilSubscribtionRequest(String phoneNum, String code, String matchId) {
 		Result res;
-		res = securityManger.eligibleForSubscription(phoneNum, code);
+		res = securityManger.eligibleForSubscription(phoneNum, code, matchId);
 		if(!res.isValid()){
 			LOGGER.debug("subscribtion request by "+phoneNum +" wasn't satisfied");
+			return res;
+		}
+		if(securityManger.alreadySubscribed(phoneNum, matchId)){
+			LOGGER.debug("already subscribed");
+			subscriberData.removeMatchForUser(phoneNum, matchId);
 			return res;
 		}
 		subscriberData.saveMatchForUser(phoneNum, matchId);

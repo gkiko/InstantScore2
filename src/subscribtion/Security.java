@@ -8,7 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import utils.Utils;
-import database.DbManager;
 import database.SubscriberData;
 
 public class Security {
@@ -57,17 +56,15 @@ public class Security {
 		return hoursDiff>23;
 	}
 	
-	public Result eligibleForSubscription(String phoneNum, String code) {
+	public Result eligibleForSubscription(String phoneNum, String code, String matchId) {
 		Result res = new Result();
 		if(!securityCodeValid(phoneNum, code)){
 			LOGGER.debug("security code invalid");
 			res.setErrorMessage("invalid security code");
-			return res;
 		}
 		if(messageLimitReached(phoneNum)){
 			LOGGER.debug("message limit reached");
 			res.setErrorMessage("message limit reached");
-			return res;
 		}
 		
 		return res;
@@ -79,12 +76,22 @@ public class Security {
 			return false;
 		}
 		codeFromDb = subscriberData.getCodeByUser(phoneNum);
-		LOGGER.debug("code is : "+codeFromDb+ " "+(codeFromDb.equals(code)));
+		LOGGER.debug("code from db : "+codeFromDb+ " actual : "+code);
 		return code.equals(codeFromDb);
 	}
 	
-	private boolean messageLimitReached(String phoneNum){
-		return DbManager.getInstance().isMessageLimitFullForUser(phoneNum);
+	private boolean messageLimitReached(String userPhoneNumber) {
+		String lastMessageDate = subscriberData.getLastSentMsgDateByUser(userPhoneNumber);
+		String todayDate = Utils.getDateToday();
+		int numSent = subscriberData.getSentMsgsTodayByUser(userPhoneNumber);
+		if((lastMessageDate==null || lastMessageDate.equals(todayDate)) && numSent < 30) {
+			return false;
+		}
+		return true;
+	}
+	
+	public boolean alreadySubscribed(String phoneNum, String matchId){
+		return subscriberData.userSubscribedTo(phoneNum, matchId);
 	}
 	
 }

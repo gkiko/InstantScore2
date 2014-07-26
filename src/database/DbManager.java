@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import utils.Utils;
+
 public class DbManager {
 	final String LAST_MESSAGE_DATE = "select last_date from message_user where user_num = ?";
 	final String SENT_MESSAGES_QUANTITY = "select quantity from message_user where user_num = ?";
@@ -16,9 +18,10 @@ public class DbManager {
 	final String USER_LIST_BY_MATCH = "select user_num from match_user where match_id = ?";
 	final String ADD_MATCH_FOR_USER = "insert into match_user (match_id, user_num) values(?,?)";
 	final String CODE_BY_USER = "select code, time_stamp from user_code where user_num = ?";
-	final String ADD_CODE_FOR_USER = "insert into user_code (code, user_num, time_stamp) values (?,?, datetime('now','localtime'))";
+	final String ADD_CODE_FOR_USER = "insert or replace into user_code (id, code, user_num, time_stamp) values ((select id from user_code where user_num = ?), ?, ?, datetime('now','localtime'));";
 	final String SELECT_REQUEST_DATES_FOR_USR = "select time_stamp from user_code where user_num = ?";
 	final String SELECT_MATCH_BY_ID_FOR_USER = "select * from match_user where match_id = ? and user_num = ?";
+	final String DELETE_MATCH_FOR_USER = "delete from match_user where match_id = ? and user_num = ?";
 	
 	private static DbManager dbManager;
 	
@@ -43,8 +46,7 @@ public class DbManager {
 		if(rSet.next()) {
 			date = rSet.getString("time_stamp");
 		}
-		if (rSet != null) try { rSet.close(); } catch (SQLException quiet) {}
-	    closeConnectionAndStatement(conn, stmt);
+	    closeQuietly(conn, stmt, rSet);
 		return date;
 	}
 	
@@ -60,6 +62,7 @@ public class DbManager {
 			user = rSet.getString("user_num");
 			users.add(user);
 		}
+		closeQuietly(conn, stmt, rSet);
 		return users;
 	}
 	
@@ -67,24 +70,29 @@ public class DbManager {
 		Connection conn = ConnectionPooler.GetConnection();
 		PreparedStatement stmt = conn.prepareStatement(SELECT_MATCH_BY_ID_FOR_USER);
 		prepareStatement(stmt, matchId, user);
-		
 		ResultSet rSet = stmt.executeQuery();
+		
 		boolean found = rSet.next();
-		closeConnectionAndStatement(conn, stmt);
-		try { rSet.close(); } catch(SQLException quiet) {}
+		closeQuietly(conn, stmt, rSet);
 		return found;
 	}
 	
 	public void addMatchForUser(String matchId, String user) throws SQLException{
-		if(matchIsAlreadyAddedForUser(matchId, user)) {
-			return; // no need to add the same match again
-		}
 		Connection conn = ConnectionPooler.GetConnection();
 		PreparedStatement stmt = conn.prepareStatement(ADD_MATCH_FOR_USER);
 		prepareStatement(stmt, matchId, user);
 		
 		stmt.executeUpdate();
-		closeConnectionAndStatement(conn, stmt);
+		closeQuietly(conn, stmt, null);
+	}
+	
+	public void removeMatchForUser(String matchId, String user) throws SQLException{
+		Connection conn = ConnectionPooler.GetConnection();
+		PreparedStatement stmt = conn.prepareStatement(DELETE_MATCH_FOR_USER);
+		prepareStatement(stmt, matchId, user);
+		
+		stmt.executeUpdate();
+		closeQuietly(conn, stmt, null);
 	}
 	
 	public String getCodeByUser(String user) throws SQLException{
@@ -97,18 +105,17 @@ public class DbManager {
 		if(rSet.next()){
 			code = rSet.getString("code");
 		}
-		if (rSet != null) try { rSet.close(); } catch (SQLException quiet) {}
-		closeConnectionAndStatement(conn, stmt);
+		closeQuietly(conn, stmt, null);
 		return code;
 	}
 	
 	public void addCodeForUser(String code, String user) throws SQLException{
 		Connection conn = ConnectionPooler.GetConnection();
 		PreparedStatement stmt = conn.prepareStatement(ADD_CODE_FOR_USER);
-		prepareStatement(stmt, code, user);
+		prepareStatement(stmt, user, code, user);
 		
 		stmt.executeUpdate();
-		closeConnectionAndStatement(conn, stmt);
+		closeQuietly(conn, stmt, null);
 	}
 	
 	private void prepareStatement(PreparedStatement stmt, String...args) throws SQLException{
@@ -117,18 +124,17 @@ public class DbManager {
 		}
 	}
 	
-	private String getLastSentMessageDate(String phoneNumber) throws SQLException {
+	public String getLastSentMessageDate(String phoneNumber) throws SQLException {
 		Connection conn = ConnectionPooler.GetConnection();
 		PreparedStatement stmt = conn.prepareStatement(LAST_MESSAGE_DATE);
-		prepareStatement(stmt, "'"+phoneNumber+"'");
-		
+		prepareStatement(stmt, phoneNumber);
 		ResultSet rSet = stmt.executeQuery();
+		
 		String lastDate = null;
 		if(rSet.next()) {
 			lastDate = rSet.getString("last_date");
 		}
-	    closeConnectionAndStatement(conn, stmt);
-	    try { rSet.close(); } catch (SQLException quiet) {}
+	    closeQuietly(conn, stmt, rSet);
 		return lastDate;
 	}
 	
@@ -139,96 +145,37 @@ public class DbManager {
 		if(numSent==0) {
 			System.out.println("inserting for the first time "+userPhoneNumber);
 			stmt = conn.prepareStatement(INSERT_USER_INTO_MESSAGES);
-			prepareStatement(stmt, "'"+userPhoneNumber+"'", getCurrentDayDate());
+			prepareStatement(stmt, "'"+userPhoneNumber+"'", Utils.getDateToday());
 		}
 		else {
 			System.out.println("updating already existing one for "+userPhoneNumber+" with "+(numSent+1));
 			numSent++;
 			stmt = conn.prepareStatement(UPDATE_MESSAGES_QUANTITY);
-			prepareStatement(stmt, ""+numSent, getCurrentDayDate(), "'"+userPhoneNumber+"'");
+			prepareStatement(stmt, ""+numSent, Utils.getDateToday(), "'"+userPhoneNumber+"'");
 		}
 		
 		stmt.executeUpdate();
-		closeConnectionAndStatement(conn, stmt);
+		closeQuietly(conn, stmt, null);
 	}
 	
-	private boolean areSameDays(String date1, String date2) {
-		if(date1==null || date2==null) {
-			return false;
-		}
-		return date1.equals(date2);
-	}
-	
-	private int getQuantityOfSentMessagesForToday(String phoneNumber) throws SQLException {
+	public int getQuantityOfSentMessagesForToday(String phoneNumber) throws SQLException {
 		Connection conn = ConnectionPooler.GetConnection();
 		PreparedStatement stmt = conn.prepareStatement(SENT_MESSAGES_QUANTITY);
-		prepareStatement(stmt, "'"+phoneNumber+"'");
+		prepareStatement(stmt, phoneNumber);
 		
 		ResultSet rset = stmt.executeQuery();
 		int quantity = 0;
 	    if(rset.next()) {
-	    	quantity = Integer.parseInt(rset.getString("quantity"));
+	    	quantity = rset.getInt("quantity");
 	    }
 	    
-	    closeConnectionAndStatement(conn, stmt);
-	    try { rset.close(); } catch(SQLException quiet) { }
+	    closeQuietly(conn, stmt, rset);
 		
 	    return quantity;
 	}
 	
-	public boolean isMessageLimitFullForUser(String userPhoneNumber) {
-		try{
-			String lastMessageDate = getLastSentMessageDate(userPhoneNumber);
-			String todayDate = "";
-			int numSent = getQuantityOfSentMessagesForToday(userPhoneNumber);
-			if((lastMessageDate==null || areSameDays(todayDate, lastMessageDate)) && numSent < notifier.MsgSender.MESSAGE_LIMIT_PER_DAY) {
-				return false;
-			}
-		}
-		catch(SQLException quiet) {
-			return false;
-		}
-		return true;
-	}
-	
-	public boolean checkForMessageLimitAndUpdate(String userPhoneNumber) {
-		try{
-			String lastMessageDate = getLastSentMessageDate(userPhoneNumber);
-			String todayDate = "";
-			int numSent = getQuantityOfSentMessagesForToday(userPhoneNumber);
-			if((lastMessageDate==null || areSameDays(todayDate, lastMessageDate)) && numSent < notifier.MsgSender.MESSAGE_LIMIT_PER_DAY) {
-				incrementMessageForUser(userPhoneNumber);
-				return true;
-			}
-		}
-		catch(SQLException quiet) {
-			return true;
-		}
-		return false;
-	}
-	
-	public String getCurrentDayDate() throws SQLException {
-		Connection conn = ConnectionPooler.GetConnection();
-		PreparedStatement stmt = conn.prepareStatement("select datetime('now', 'localtime')");
-		prepareStatement(stmt);
-		
-		ResultSet rset = stmt.executeQuery();
-		String date = null;
-	    if(!rset.next()) {
-	    	try{ rset.close(); } catch(SQLException quiet) {}
-	    	closeConnectionAndStatement(conn, stmt);
-			return null;
-		}
-	    date = rset.getString(1);
-	    date = date.substring(0, date.indexOf(" ")); // for example, changes 2014-07-23 16:19 to just 2014-07-23
-
-	    closeConnectionAndStatement(conn, stmt);
-		try{ rset.close(); } catch(SQLException quiet) {}
-		
-		return date;
-	}
-	
-	private void closeConnectionAndStatement(Connection conn, PreparedStatement stmt) {
+	private void closeQuietly(Connection conn, PreparedStatement stmt, ResultSet rSet) {
+		if (rSet != null) try { rSet.close(); } catch(SQLException quiet) {}
 		if (stmt != null) try { stmt.close(); } catch (SQLException quiet) {}
 	    if (conn != null) try { conn.close(); } catch (SQLException quiet) {}
 	}

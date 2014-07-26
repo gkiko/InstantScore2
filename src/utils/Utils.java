@@ -8,6 +8,11 @@ public class Utils {
 	private static String pattern = "yyyy-MM-dd";
 	private static Random random = new Random();
 	
+	public static String getDateToday(){
+		Calendar curDate = getDateWithOffset(0);
+		return dateToString(curDate);
+	}
+	
 	public static Calendar getDateWithOffset(int offset){
 		Calendar cal = Calendar.getInstance();
 		cal.add(Calendar.DAY_OF_MONTH, offset);
