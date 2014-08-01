@@ -11,6 +11,8 @@ import com.jolbox.bonecp.BoneCPConfig;
 public class ConnectionPooler {
 	final static Logger logger = LoggerFactory.getLogger(ConnectionPooler.class);
 	// /Users/Lasha/Documents/workEE/InstantScore2/product.db
+	// /Users/gkiko/Workspace/InstantScore2/product.db
+	// /racxa/product.db
 	final static String dbURL = "jdbc:sqlite:/Users/gkiko/Workspace/InstantScore2/product.db";
 	private static BoneCP connectionPool;
 

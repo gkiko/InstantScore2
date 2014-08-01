@@ -72,13 +72,11 @@ public class DataProvider extends HttpServlet {
 			}
 		}
 		
+		response.setStatus(HttpServletResponse.SC_OK);
 		if(!res.isValid()){
-			LOGGER.debug("sending error 400 to user: "+phoneNum);
-			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			LOGGER.debug("operation invalid");
 			response.getWriter().write(res.getErrorMessage());
-//			response.sendError(400, res.getErrorMessage());
 		}else{
-			response.setStatus(HttpServletResponse.SC_OK);
 			response.getWriter().write("operation successful");
 		}
 		response.getWriter().flush();
