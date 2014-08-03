@@ -2,6 +2,7 @@ package subscribtion;
 
 import java.sql.SQLException;
 
+import notifier.MsgCodes;
 import notifier.MsgSender;
 
 import org.slf4j.Logger;
@@ -47,7 +48,7 @@ public class SubscribtionManager {
 			subscriberData.saveCodeForUser(phoneNum, code);
 		} catch (TwilioRestException e) {
 			LOGGER.error("message error", e);
-			res.setErrorMessage(e.getMessage());
+			res.setErrorMessage(MsgCodes.getErrorMessageForCode(e));
 		} catch (SQLException e) {
 			res.setErrorMessage("something went wrong");
 		}
