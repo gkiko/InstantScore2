@@ -5,6 +5,8 @@ import notifier.MsgSender;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.twilio.sdk.TwilioRestException;
+
 import database.SubscriberData;
 
 public class SubscribtionManager {
@@ -37,8 +39,14 @@ public class SubscribtionManager {
 		}
 		code = res.getResult();
 		LOGGER.debug(phoneNum+" requested code: "+code);
-		subscriberData.saveCodeForUser(phoneNum, code);
-		msgSender.sendMsgToUser("Your security code: "+code, phoneNum);
+		
+		try {
+			msgSender.sendMsgToUser("Your security code: "+code, phoneNum);
+			subscriberData.saveCodeForUser(phoneNum, code);
+		} catch (TwilioRestException e) {
+			LOGGER.error("message error", e);
+			res.setErrorMessage(e.getMessage());
+		}
 		return res;
 	}
 	

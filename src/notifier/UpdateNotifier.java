@@ -22,13 +22,11 @@ public class UpdateNotifier implements Observer{
 	private DiffFinder diffFinder;
 	private MsgTextGenerator msgTextGenerator;
 	private SubscriberData subscriberData;
-//	private MsgSender msgSender;
 	
 	public UpdateNotifier(){
 		diffFinder = new DiffFinder();
 		msgTextGenerator = new MsgTextGenerator();
 		subscriberData = new SubscriberData();
-//		msgSender = MsgSender.getInstance();
 	}
 
 	@Override
@@ -54,7 +52,6 @@ public class UpdateNotifier implements Observer{
 			subscriberPhoneNumbers = subscriberData.getSubscriberPhoneNumbersForMatch(diffData.getNewMatch());
 			for(String phoneNum : subscriberPhoneNumbers){
 				Queuer.queueJob(msgText, phoneNum);
-//				msgSender.sendMsgToUser(msgText, phoneNum);
 			}
 		}
 	}
