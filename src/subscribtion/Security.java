@@ -29,6 +29,11 @@ public class Security {
 	
 	public Result tryGenerateCode(String phoneNum) {
 		Result res = new Result();
+		if(phoneNum.isEmpty()){
+			res.setErrorMessage("phone number missing");
+			return res;
+		}
+		
 		String code = "";
 		if(codeRequestTimeoutPassed(phoneNum)){
 			code = Utils.generateCode(6);

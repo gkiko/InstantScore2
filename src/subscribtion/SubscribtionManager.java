@@ -2,7 +2,6 @@ package subscribtion;
 
 import java.sql.SQLException;
 
-import notifier.MsgCodes;
 import notifier.MsgSender;
 
 import org.slf4j.Logger;
