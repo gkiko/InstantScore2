@@ -31,12 +31,13 @@ public class SubscriberData {
 		return users;
 	}
 	
-	public void saveCodeForUser(String phoneNum, String code) {
+	public void saveCodeForUser(String phoneNum, String code) throws SQLException {
 		try {
 			dbManager.addCodeForUser(code, phoneNum);
 		}
 		catch(SQLException ex) {
-			ex.printStackTrace();
+			logger.error(ex.toString());
+			throw ex;
 		}
 	}
 	
@@ -54,12 +55,13 @@ public class SubscriberData {
 		return date;
 	}
 	
-	public void saveMatchForUser(String phoneNum, String matchId){
+	public void saveMatchForUser(String phoneNum, String matchId) throws SQLException{
 		try {
 			dbManager.addMatchForUser(matchId, phoneNum);
 		}
 		catch(SQLException ex) {
 			logger.error(ex.toString());
+			throw ex;
 		}
 	}
 	

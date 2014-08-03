@@ -1,5 +1,7 @@
 package subscribtion;
 
+import java.sql.SQLException;
+
 import notifier.MsgSender;
 
 import org.slf4j.Logger;
@@ -46,6 +48,8 @@ public class SubscribtionManager {
 		} catch (TwilioRestException e) {
 			LOGGER.error("message error", e);
 			res.setErrorMessage(e.getMessage());
+		} catch (SQLException e) {
+			res.setErrorMessage("something went wrong");
 		}
 		return res;
 	}
@@ -62,7 +66,12 @@ public class SubscribtionManager {
 			subscriberData.removeMatchForUser(phoneNum, matchId);
 			return res;
 		}
-		subscriberData.saveMatchForUser(phoneNum, matchId);
+		
+		try {
+			subscriberData.saveMatchForUser(phoneNum, matchId);
+		} catch (SQLException e) {
+			res.setErrorMessage("something went wrong");
+		}
 		return res;
 	}
 }
