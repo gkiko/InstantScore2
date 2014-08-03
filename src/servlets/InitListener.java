@@ -10,6 +10,7 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
 
+import notifier.Queuer;
 import notifier.UpdateNotifier;
 
 import org.slf4j.Logger;
@@ -24,7 +25,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import database.ConnectionPooler;
-import database.DbManager;
 
 /**
  * Application Lifecycle Listener implementation class InitListener
@@ -51,6 +51,7 @@ public class InitListener implements ServletContextListener {
     public void contextInitialized(final ServletContextEvent arg0) {
     	arg0.getServletContext().setAttribute("subscribtion_manager", subscribtionManager);
     	ConnectionPooler.InitializePooler();
+    	Queuer.init();
     	
     	scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
 		scheduledExecutorService.scheduleAtFixedRate(new Runnable() {
@@ -85,6 +86,7 @@ public class InitListener implements ServletContextListener {
     	asyncDataSaver.stop();
     	scheduledExecutorService.shutdown();
     	ConnectionPooler.ReleasePooler();
+    	Queuer.shutDown();
     }
 	
 }
