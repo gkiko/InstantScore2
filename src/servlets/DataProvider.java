@@ -75,7 +75,6 @@ public class DataProvider extends HttpServlet {
 		if(!res.isValid()){
 			LOGGER.debug("sending code 400 to user: "+phoneNum);
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-			LOGGER.debug("operation invalid");
 			response.getWriter().write(res.getErrorMessage());
 		}else{
 			LOGGER.debug("sending code 200 to user: "+phoneNum);
