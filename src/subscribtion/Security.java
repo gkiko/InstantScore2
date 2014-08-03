@@ -35,6 +35,7 @@ public class Security {
 			res.setResult(code);
 		}else{
 			res.setErrorMessage("repeatedly asking for code");
+			LOGGER.debug("repeatedly asking for code");
 		}
 		return res;
 	}
