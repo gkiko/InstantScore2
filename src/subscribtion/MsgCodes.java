@@ -20,7 +20,8 @@ public class MsgCodes {
 		CANNOT_ROUTE(21612, "Twillio cannot route to this number."),
 		NO_INTERNATIONAL_PERMISSIONS(21408, "This account doesn't have the international permissions necessary to SMS this number."),
 		BLACKLISTED_NUMBER(21610, "This number is blacklisted for your account."),
-		INCAPABLE_NUMBER(21614, "This number is incapable of receiving SMS messages.");
+		INCAPABLE_NUMBER(21614, "This number is incapable of receiving SMS messages."),
+		OTHER_CASE(-1, "Something went wrong.");
 		
 		
 		private final int errorCode;
@@ -46,7 +47,7 @@ public class MsgCodes {
 					return errorNotif;
 				}
 			}
-			return null;
+			return ErrorNotification.OTHER_CASE;
 		}
 		
 	}
