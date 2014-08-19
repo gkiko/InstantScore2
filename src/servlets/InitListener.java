@@ -25,6 +25,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import database.ConnectionPooler;
+import database.DbManager;
 
 /**
  * Application Lifecycle Listener implementation class InitListener
@@ -58,6 +59,8 @@ public class InitListener implements ServletContextListener {
 			
 			@Override
 			public void run() {
+				DbManager.getInstance().clearTables();
+				
 				Gson gson = new GsonBuilder().create();
 				ConfigObject conf = gson.fromJson(new InputStreamReader(getClass().getResourceAsStream("/utils/config.json")), ConfigObject.class);
 				arg0.getServletContext().setAttribute("config", conf);
@@ -66,16 +69,8 @@ public class InitListener implements ServletContextListener {
 				asyncDataSaver.stop();
 				asyncDataSaver.addObserver(observer);
 				asyncDataSaver.downloadAndSaveData(conf);
-				
 			}
 		}, 0, 1, TimeUnit.DAYS);
-//		System.out.println("main...");
-//		try{
-//			DbManager.main(null);
-//		}
-//		catch(Exception ex) {
-//			ex.printStackTrace();
-//		}
     }
 
 	/**

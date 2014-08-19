@@ -15,7 +15,7 @@ public class BasicParser implements Parser {
 
 	@Override
 	public List<League> parse(String url) throws IOException {
-		Document doc = Jsoup.connect(url).get();
+		Document doc = Jsoup.connect(url).timeout(5000).get();
 
 		Elements leagues = doc.select(".league-table:not(.mtn)");
 

@@ -68,10 +68,6 @@ public class Security {
 			LOGGER.debug("security code invalid");
 			res.setErrorMessage("invalid security code");
 		}
-		if(messageLimitReached(phoneNum)){
-			LOGGER.debug("message limit reached");
-			res.setErrorMessage("message limit reached");
-		}
 		
 		return res;
 	}
@@ -85,17 +81,7 @@ public class Security {
 		LOGGER.debug("code from db : "+codeFromDb+ " actual : "+code);
 		return code.equals(codeFromDb);
 	}
-	
-	private boolean messageLimitReached(String userPhoneNumber) {
-		String lastMessageDate = subscriberData.getLastSentMsgDateByUser(userPhoneNumber);
-		String todayDate = Utils.getDateToday();
-		int numSent = subscriberData.getSentMsgsTodayByUser(userPhoneNumber);
-		if((lastMessageDate==null || lastMessageDate.equals(todayDate)) && numSent < 30) {
-			return false;
-		}
-		return true;
-	}
-	
+		
 	public boolean alreadySubscribed(String phoneNum, String matchId){
 		return subscriberData.userSubscribedTo(phoneNum, matchId);
 	}

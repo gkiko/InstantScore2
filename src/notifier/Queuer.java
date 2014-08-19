@@ -39,12 +39,13 @@ public class Queuer {
 		t.start();
 	}
 
-	public static Future<Void> queueJob(final String txt, final String phoneNum) {
+	public static Future<Void> queueJob(final String txt, final String phoneNum, final Callable<Void> callable) {
 		Future<Void> res = completionService.submit(new Callable<Void>() {
 
 			@Override
 			public Void call() throws Exception {
 				msgSender.sendMsgToUser(txt, phoneNum);
+				callable.call();
 				return null;
 			}
 

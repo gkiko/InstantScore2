@@ -17,10 +17,10 @@ public class SubscriberData {
 		dbManager = DbManager.getInstance();
 	}
 	
-	public List<String> getSubscriberPhoneNumbersForMatch(Match matchId){
+	public List<String> getSubscriberPhoneNumbersForMatch(Match matchId, int msgLimit){
 		List<String> users = null;
 		try{
-			users = dbManager.getUsersByMatch(matchId.getMatchId());
+			users = dbManager.getUsersByMatch(matchId.getMatchId(), msgLimit);
 		}
 		catch(SQLException ex) {
 			logger.error(ex.toString());
@@ -85,24 +85,12 @@ public class SubscriberData {
 		return code;
 	}
 	
-	public String getLastSentMsgDateByUser(String user){
-		String date = null;
+	public void countSentMessageForUser(String phoneNum){
 		try {
-			date = dbManager.getLastSentMessageDate(user);
+			dbManager.countMessageForUser(phoneNum);
 		} catch (SQLException e) {
 			logger.error(e.toString());
 		}
-		return date;
-	}
-	
-	public int getSentMsgsTodayByUser(String user){
-		int num = 0;
-		try {
-			num = dbManager.getQuantityOfSentMessagesForToday(user);
-		} catch (SQLException e) {
-			logger.error(e.toString());
-		}
-		return num;
 	}
 	
 	public void removeMatchForUser(String user, String matchId){

@@ -1,7 +1,5 @@
 package parsing;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,34 +12,11 @@ import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import utils.ConfigUtils;
-
 public class AsyncDataSaver {
 	private static final Logger LOGGER = LoggerFactory.getLogger(AsyncDataSaver.class);
 	private Observer observer;
 	private ScheduledExecutorService scheduledExecutorService;
 	private List<Observable> observables;
-	
-	public static void main(String[] args) {
-//		ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
-//		scheduledExecutorService.scheduleAtFixedRate(new Runnable() {
-//			
-//			@Override
-//			public void run() {
-//				ConfigObject conf = new ConfigObject();
-//				try {
-//					conf.createFrom(new FileInputStream("config.json"));
-//				} catch (FileNotFoundException e) {
-//					e.printStackTrace();
-//				}
-//				
-//				ConfigUtils.modifyUrlFields(conf);
-//				AsyncDataSaver asyncDataSaver = new AsyncDataSaver();
-//				asyncDataSaver.downloadAndSaveData(conf);
-//				
-//			}
-//		}, 0, 1, TimeUnit.DAYS);
-	}
 	
 	public AsyncDataSaver(){
 		observables = new ArrayList<Observable>();
@@ -105,6 +80,7 @@ public class AsyncDataSaver {
 	}
 	
 	public void stop(){
+		LOGGER.info("shutting down shceduler");
 		if(scheduledExecutorService==null){
 			return;
 		}

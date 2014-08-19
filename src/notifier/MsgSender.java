@@ -33,7 +33,7 @@ public class MsgSender {
 		client = new TwilioRestClient(accountSid, authToken);
 	}
 
-	public void sendMsgToUser(String txt, String phoneNum) throws TwilioRestException {
+	public Message sendMsgToUser(String txt, String phoneNum) throws TwilioRestException {
 			MessageFactory messageFactory = client.getAccount().getMessageFactory();
 			List<NameValuePair> params = new ArrayList<NameValuePair>();
 			params.add(new BasicNameValuePair("Body", txt));
@@ -42,5 +42,6 @@ public class MsgSender {
 
 			Message message = messageFactory.create(params);
 			logger.debug("send success "+message.getSid()+" "+message.getBody());
+			return message;
 	}
 }

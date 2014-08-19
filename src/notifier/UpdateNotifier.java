@@ -3,6 +3,7 @@ package notifier;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.concurrent.Callable;
 
 import model.League;
 
@@ -49,11 +50,35 @@ public class UpdateNotifier implements Observer{
 		for(DiffData diffData : diffs){
 			msgText = msgTextGenerator.getMsgText(diffData);
 			
-			subscriberPhoneNumbers = subscriberData.getSubscriberPhoneNumbersForMatch(diffData.getNewMatch());
-			for(String phoneNum : subscriberPhoneNumbers){
-				Queuer.queueJob(msgText, phoneNum);
+			subscriberPhoneNumbers = subscriberData.getSubscriberPhoneNumbersForMatch(diffData.getNewMatch(), 30);
+			for(final String phoneNum : subscriberPhoneNumbers){
+				Queuer.queueJob(msgText, phoneNum, new Callable<Void>() {
+
+					@Override
+					public Void call() throws Exception {
+						subscriberData.countSentMessageForUser(phoneNum);
+						return null;
+					}
+					
+				});
 			}
 		}
+//		Match m = new Match();
+//		m.setTeam1("Fortuna Dusseldorf");
+//		m.setTeam2("Braunschweig");
+//		List<String> subscriberPhoneNumbers = subscriberData.getSubscriberPhoneNumbersForMatch(m, 2);
+//		System.out.println(m.getMatchId()+" "+subscriberPhoneNumbers.size());
+//		for(final String phoneNum : subscriberPhoneNumbers){
+//			Queuer.queueJob("test", phoneNum, new Callable<Void>() {
+//
+//				@Override
+//				public Void call() throws Exception {
+//					subscriberData.countSentMessageForUser(phoneNum);
+//					return null;
+//				}
+//				
+//			});
+//		}
 	}
 	
 }
