@@ -17,3 +17,5 @@ addons:
     build_command_prepend: ""
     build_command:   "mvn install"
     branch_pattern: "*"
+
+install: mvn clean install
