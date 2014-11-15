@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import notifier.MsgSender;
+
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,6 +51,9 @@ public class DataProvider extends HttpServlet {
 		f = new File(fileName);
 		FileInputStream in = new FileInputStream(f);
 		IOUtils.copy(in, response.getOutputStream());
+		
+		response.getOutputStream().flush();
+		response.getOutputStream().close();
 	}
 
 	/**

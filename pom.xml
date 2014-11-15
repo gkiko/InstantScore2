@@ -51,14 +51,10 @@
 			<artifactId>tomcat-util</artifactId>
 			<version>8.0.14</version>
 		</dependency>
-		<!-- <dependency>
-			<groupId>org.apache.tomcat</groupId>
-			<artifactId>tomcat-api</artifactId>
-			<version>8.0.14</version>
-		</dependency>  -->
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>javax.servlet-api</artifactId>
+			<scope>provided</scope>
 			<version>3.1.0</version>
 		</dependency>
 		<dependency>

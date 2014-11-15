@@ -15,9 +15,9 @@ import com.twilio.sdk.resource.instance.Message;
 
 public class MsgSender {
 	static final Logger logger = LoggerFactory.getLogger(MsgSender.class);
-	static final String authToken = "0c863eb8b4328910e1c657ec7988b4ef";
-	static final String accountSid = "AC5a22a858703af1d045951b8649d65a82";
-	static final String myPhoneNum = "+15005550006";
+	private final String authToken = System.getenv("AUTH_TOKEN");
+	private final String accountSid = System.getenv("ACCOUNT_SID");
+	private final String myPhoneNum = System.getenv("SRC_PHONE_NUM");
 
 	static MsgSender msgSender;
 	private static TwilioRestClient client;

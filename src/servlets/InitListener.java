@@ -10,6 +10,7 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
 
+import notifier.MsgSender;
 import notifier.Queuer;
 import notifier.UpdateNotifier;
 
