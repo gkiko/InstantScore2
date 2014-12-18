@@ -2,20 +2,20 @@ language: java
 jdk:
   - openjdk7
 
-env:
-  global:
+#env:
+#  global:
    # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
    #   via the "travis encrypt" command using the project repo's public key
-   - secure: "t4Yq+Wjhjdspx9YwYJhxU4rMfcuuT7DdCdB/BPdgpCDvGRkUZ+UWEoOj6OOzyLeOQq4Z/a+TGb6U4qe+3tP2ehZjpWTPNkwiTQJVviuIkuHZFi2Jtw/deQBjU+CEiM3K+oHm06ZFkq7h78eM67/X8kPDCta3qdfg+jvqFvjwpRA="
+#   - secure: "t4Yq+Wjhjdspx9YwYJhxU4rMfcuuT7DdCdB/BPdgpCDvGRkUZ+UWEoOj6OOzyLeOQq4Z/a+TGb6U4qe+3tP2ehZjpWTPNkwiTQJVviuIkuHZFi2Jtw/deQBjU+CEiM3K+oHm06ZFkq7h78eM67/X8kPDCta3qdfg+jvqFvjwpRA="
 
-addons:
-  coverity_scan:
-    project:
-      name: "llaki/InstantScore2"
-      description: "semen project"
-    notification_email: gkiko10@freeuni.edu.ge
-    build_command_prepend: "cov-configure --java"
-    build_command:   "mvn clean install"
-    branch_pattern: "*"
+#addons:
+#  coverity_scan:
+#    project:
+#      name: "llaki/InstantScore2"
+#      description: "semen project"
+#    notification_email: gkiko10@freeuni.edu.ge
+#    build_command_prepend: "cov-configure --java"
+#    build_command:   "mvn clean install"
+#    branch_pattern: "*"
 
-install: mvn clean install
+install: mvn clean package findbugs:check
