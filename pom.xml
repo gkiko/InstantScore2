@@ -5,6 +5,9 @@
 	<artifactId>InstantScore2</artifactId>
 	<version>1.0.1</version>
 	<packaging>war</packaging>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
 	<dependencies>
 		<dependency>
 			<groupId>com.jolbox</groupId>
