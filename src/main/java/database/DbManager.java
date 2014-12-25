@@ -7,7 +7,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class DbManager {
+	final static Logger logger = LoggerFactory.getLogger(DbManager.class);
 	final String INSERT_USER_INTO_MESSAGES_1 = "insert or replace into message_user (id, user_num, quantity, last_date) values(coalesce((select id from message_user where user_num=?),null), ?, coalesce((select quantity from message_user where user_num=?)+1, 1), datetime('now', 'localtime'))";
 	final String USER_LIST_BY_MATCH = "select match_user.user_num from match_user left join message_user on message_user.user_num = match_user.user_num where match_user.match_id = ? and ifnull(message_user.quantity,0) < ?";
 	final String ADD_MATCH_FOR_USER = "insert into match_user (match_id, user_num) values(?,?)";
@@ -146,7 +150,7 @@ public class DbManager {
 			stmt = conn.prepareStatement(DELETE_ALL_MSG_COUNTS);
 			stmt.execute();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			logger.error(e.toString());
 		}
 		closeQuietly(conn, stmt, null);
 	}

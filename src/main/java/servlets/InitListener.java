@@ -10,7 +10,6 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
 
-import notifier.MsgSender;
 import notifier.Queuer;
 import notifier.UpdateNotifier;
 
@@ -63,7 +62,7 @@ public class InitListener implements ServletContextListener {
 				DbManager.getInstance().clearTables();
 				
 				Gson gson = new GsonBuilder().create();
-				ConfigObject conf = gson.fromJson(new InputStreamReader(getClass().getResourceAsStream("/utils/config.json")), ConfigObject.class);
+				ConfigObject conf = gson.fromJson(new InputStreamReader(getClass().getClassLoader().getResourceAsStream("config.json")), ConfigObject.class);
 				arg0.getServletContext().setAttribute("config", conf);
 				
 				ConfigUtils.modifyUrlFields(conf);
@@ -81,8 +80,8 @@ public class InitListener implements ServletContextListener {
     	asyncDataSaver.removeObserver();
     	asyncDataSaver.stop();
     	scheduledExecutorService.shutdown();
-    	ConnectionPooler.ReleasePooler();
     	Queuer.shutDown();
+    	ConnectionPooler.ReleasePooler();
     }
 	
 }

@@ -13,7 +13,7 @@ public class ConnectionPooler {
 	// /Users/Lasha/Documents/workEE/InstantScore2/product.db
 	// /Users/gkiko/Workspace/InstantScore2/product.db
 	// /racxa/product.db
-	final static String dbURL = "jdbc:sqlite:/racxa/product.db";
+	final static String dbURL = "jdbc:sqlite:/Users/gkiko/Workspace/InstantScore2/product.db";
 	private static BoneCP connectionPool;
 
 	public static void InitializePooler() {
