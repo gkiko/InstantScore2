@@ -115,7 +115,7 @@
 				<artifactId>tomcat7-maven-plugin</artifactId>
 				<version>2.2</version>
 				<configuration>
-					<url>http://ec2-54-191-136-49.us-west-2.compute.amazonaws.com:8080/manager/text</url>
+					<url>http://127.0.0.1:8080/manager/text</url>
 					<server>TomcatServer</server>
 					<path>/instantscore</path>
 				</configuration>
