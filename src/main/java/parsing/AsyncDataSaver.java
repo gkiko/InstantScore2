@@ -14,8 +14,8 @@ import org.slf4j.LoggerFactory;
 
 public class AsyncDataSaver {
 	private static final Logger LOGGER = LoggerFactory.getLogger(AsyncDataSaver.class);
-	private Observer observer;
 	private ScheduledExecutorService scheduledExecutorService;
+	private Observer observer;
 	private List<Observable> observables;
 	
 	public AsyncDataSaver(){
