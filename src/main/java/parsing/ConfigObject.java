@@ -20,5 +20,4 @@ public class ConfigObject implements Iterable<ConfigElement> {
 	public Iterator<ConfigElement> iterator() {
 		return items.iterator();
 	}
-	
 }

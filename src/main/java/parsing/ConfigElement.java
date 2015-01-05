@@ -47,13 +47,5 @@ public class ConfigElement {
 	public void setListOfUrls(java.util.List<String> listOfUrls) {
 		this.url = listOfUrls;
 	}
-	
-	@Override
-	public String toString(){
-		StringBuilder sb = new StringBuilder();
-		sb.append("fileName: ").append(fileName).append("\nparameter: ").append(parameter).append("\nparser: ").append(parser)
-				.append("\nperiod: ").append(period).append("\ntimeUnit: ").append(timeUnit).append("\nobservable: ").append(observable);
-		return sb.toString();
-	}
 
 }

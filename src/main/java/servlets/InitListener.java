@@ -17,15 +17,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import parsing.AsyncDataSaver;
-import parsing.ConfigElement;
 import parsing.ConfigObject;
 import subscribtion.SubscribtionManager;
 import utils.ConfigUtils;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonIOException;
-import com.google.gson.JsonSyntaxException;
 
 import database.ConnectionPooler;
 import database.DbManager;
@@ -65,12 +62,7 @@ public class InitListener implements ServletContextListener {
 				DbManager.getInstance().clearTables();
 				
 				Gson gson = new GsonBuilder().create();
-				ConfigObject conf = null;
-				try{
-					conf = gson.fromJson(new InputStreamReader(getClass().getClassLoader().getResourceAsStream("config.json")), ConfigObject.class);
-				} catch(JsonSyntaxException | JsonIOException e){
-					LOGGER.error(e.toString());
-				}
+				ConfigObject conf = gson.fromJson(new InputStreamReader(getClass().getClassLoader().getResourceAsStream("config.json")), ConfigObject.class);
 				arg0.getServletContext().setAttribute("config", conf);
 				
 				ConfigUtils.modifyUrlFields(conf);
