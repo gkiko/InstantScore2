@@ -68,7 +68,7 @@ public class InitListener implements ServletContextListener {
 				ConfigObject conf = null;
 				try{
 					conf = gson.fromJson(new InputStreamReader(getClass().getClassLoader().getResourceAsStream("config.json")), ConfigObject.class);
-				} catch(JsonSyntaxException | JsonIOException e){
+				} catch(Exception e){
 					LOGGER.error(e.toString());
 				}
 				arg0.getServletContext().setAttribute("config", conf);

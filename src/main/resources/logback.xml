@@ -1,9 +1,9 @@
 <configuration>
 
 	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-		<encoder>
+		<layout class="ch.qos.logback.classic.PatternLayout">
 			<pattern>%date %level [%thread] %logger{10} [%file:%line] %msg%n</pattern>
-		</encoder>
+		</layout>
 	</appender>
 
 	<root level="debug">

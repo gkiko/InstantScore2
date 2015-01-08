@@ -30,7 +30,7 @@ public class Queuer {
 					try {
 						Future<Void> fut = completionService.take();
 					} catch (InterruptedException e) {
-						e.printStackTrace();
+						logger.error(e.toString());
 					}
 				}
 			}
