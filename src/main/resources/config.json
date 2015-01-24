@@ -7,7 +7,7 @@
       "url":[
          "http://www.livescore.com/soccer/"
       ],
-      "parser":"parsing.BasicParser",
+      "parser":"parsing.BasicParser2",
       "period":"5",
       "timeUnit":"SECONDS"
    },
@@ -21,7 +21,7 @@
          "http://www.livescore.com/soccer/",
          "http://www.livescore.com/soccer/"
       ],
-      "parser":"parsing.BasicParser",
+      "parser":"parsing.BasicParser2",
       "period":"1",
       "timeUnit":"DAYS"
    }

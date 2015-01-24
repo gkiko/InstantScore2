@@ -25,7 +25,7 @@ public class BasicParser implements Parser {
 
 			League leagueObj = new League();
 			List<Match> matcheList = new ArrayList<Match>();
-
+			
 			Element header = leagueData.first();
 			String headerText = header.select(".league").text();
 			String date = header.select(".date").text();
